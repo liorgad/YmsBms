@@ -20,4 +20,9 @@ namespace Common
     public class PortConnected
     {      
     }
+
+    public class BatteryRemoveView
+    {
+        public string Address { get; set; }
+    }
 }

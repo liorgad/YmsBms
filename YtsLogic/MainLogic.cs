@@ -303,7 +303,7 @@ namespace YtsLogic
             }
             else
             {
-                vm.Current = realTimeData.Current[0] == 0 ? realTimeData.Current[1] : realTimeData.Current[0];
+                vm.Current = realTimeData.Current[0] == 0 ? (realTimeData.Current[1] * (-1)) : realTimeData.Current[0];
             }
 
             vm.SOC = realTimeData.SOC;
@@ -315,48 +315,54 @@ namespace YtsLogic
             vm.TemperatureState = realTimeData.TState;
             vm.VoltageState = realTimeData.VState;
 
+            string protection = string.Empty;
+            Color backColor = Color.Transparent;
+
             if (vm.VoltageState == 0)
             {
-                vm.Protection = string.Empty;
-                vm.ProtectionBackColor = Color.Transparent;
+                //vm.Protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
             }
             else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
             {
-                vm.Protection = "Single cell undervoltage";
-                vm.ProtectionBackColor = Color.Red;
+                protection = "Single cell undervoltage";
+                backColor = Color.Yellow;
             }
             else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
             {
-                vm.Protection = "Battery pack undervoltage ";
-                vm.ProtectionBackColor = Color.Red;
+                protection = "Battery pack undervoltage ";
+                backColor = Color.Yellow;
             }
             else
             {
-                vm.Protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
-                vm.ProtectionBackColor = Color.Orange;
+                protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
+                backColor = Color.Orange;
             }
 
             if (vm.ChargeState == 0)
             {
-                vm.Protection = string.Empty;
-                vm.ProtectionBackColor = Color.Transparent;
+                //vm.Protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
             }
             else
             {
-                vm.Protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
-                vm.ProtectionBackColor = Color.Orange;
+                protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
+                backColor = Color.Orange;
             }
 
             if (vm.TemperatureState == 0)
             {
-                vm.Protection = string.Empty;
-                vm.ProtectionBackColor = Color.Transparent;
+                //protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
             }
             else
             {
-                vm.Protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
-                vm.ProtectionBackColor = Color.Orange;
+                protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
+                backColor = Color.Orange;
             }
+
+            vm.Protection = protection;
+            vm.ProtectionBackColor = backColor;
 
             Debug.WriteLine(vm.ToString());
             logger.Trace(vm.ToStringAllProperties());

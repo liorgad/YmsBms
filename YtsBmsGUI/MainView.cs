@@ -23,7 +23,8 @@ namespace YtsBmsGUI
     public partial class MainView : Form,
         IHandle<ToolStripMessage>,
         IHandle<MessageBoxMessage>,
-        IHandle<PortConnected>
+        IHandle<PortConnected>,
+        IHandle<BatteryRemoveView>
     {
         //System.Timers.Timer samplingTimer;
         //Configuration.Defaulturation Configuration.Default = new Configuration.Defaulturation(); 
@@ -312,8 +313,20 @@ namespace YtsBmsGUI
                     }
                 }
 
-                treeView1.Nodes.Add(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
+                AddToTreeView(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
+
                 logger.Info(string.Format("Added Battery : {0}", newBatteryView.Address));
+            }
+        }
+
+        private void AddToTreeView(string key,string text,int imageIndex)
+        {
+            if (!treeView1.Nodes.ContainsKey(key))
+            {
+                treeView1.BeginUpdate();
+
+                treeView1.Nodes.Add(key, text, imageIndex);
+                treeView1.EndUpdate();
             }
         }
 
@@ -416,25 +429,25 @@ namespace YtsBmsGUI
         private void timer1_Tick(object sender, EventArgs e)
         {
 
-            // Display a wait cursor while the TreeNodes are being created.
-            //Cursor.Current = Cursors.WaitCursor;
+            //// Display a wait cursor while the TreeNodes are being created.
+            ////Cursor.Current = Cursors.WaitCursor;
 
-            // Suppress repainting the TreeView until all the objects have been created.
-            treeView1.BeginUpdate();
+            //// Suppress repainting the TreeView until all the objects have been created.
+            //treeView1.BeginUpdate();
 
-            // Clear the TreeView each time the method is called.
-            treeView1.Nodes.Clear();
+            //// Clear the TreeView each time the method is called.
+            //treeView1.Nodes.Clear();
 
-            foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
-            {
-                treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
-            }
+            //foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
+            //{
+            //    treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
+            //}
 
-            // Reset the cursor to the default for all controls.
-            // Cursor.Current = Cursors.Default;
+            //// Reset the cursor to the default for all controls.
+            //// Cursor.Current = Cursors.Default;
 
-            // Begin repainting the TreeView.
-            treeView1.EndUpdate();
+            //// Begin repainting the TreeView.
+            //treeView1.EndUpdate();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -510,14 +523,40 @@ namespace YtsBmsGUI
             clusterToolStripMenuItem.Enabled = true;
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        
+        void IHandle<BatteryRemoveView>.Handle(BatteryRemoveView message)
         {
-            BatteryStatViewModel viewModel;
-            if(SharedData.Default.BatteryPackContainer.TryGetValue(e.Node.Name, out viewModel))
-            {
-                var statUC = new BatteryStats(e.Node.Name, viewModel);
-                this.flowLayoutPanel1.Controls.Add(statUC);
-            }            
+            this.flowLayoutPanel1.Controls.RemoveByKey(message.Address);           
+        }
+
+        private void RemoveFromTreeView(string key)
+        {
+            // Display a wait cursor while the TreeNodes are being created.
+            Cursor.Current = Cursors.WaitCursor;
+
+            // Suppress repainting the TreeView until all the objects have been created.
+            treeView1.BeginUpdate();
+
+            // Clear the TreeView each time the method is called.
+            //treeView1.Nodes.Clear();
+
+            treeView1.Nodes.RemoveByKey(key);
+
+            //foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
+            //{
+            //    treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
+            //}
+
+            // Reset the cursor to the default for all controls.
+            // Cursor.Current = Cursors.Default;
+
+            // Begin repainting the TreeView.
+            treeView1.EndUpdate();
+        }
+
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

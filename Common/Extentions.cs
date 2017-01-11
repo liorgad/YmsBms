@@ -39,7 +39,24 @@ namespace Common
 
             foreach (var item in properties)
             {
-                sb.Append(string.Format("[{0}]={1},",item.Name,item.GetValue(obj)));
+                if(item.PropertyType.IsArray)
+                {
+                    StringBuilder sb2 = new StringBuilder();
+                    Array arr = (Array)item.GetValue(obj);
+                    sb2.Append("{ ");
+                    foreach (var element in arr)
+                    {
+                        sb2.AppendFormat("[{0}],", element);
+                    }
+                    sb2.Append(" }");
+
+                    sb.Append(string.Format("[{0}]=[{1}],", item.Name,sb2.ToString()));
+                }
+                else
+                {
+                    sb.Append(string.Format("[{0}]=[{1}],", item.Name, item.GetValue(obj)));
+                }
+                
             }
 
             return sb.ToString();
@@ -51,9 +68,11 @@ namespace Common
             var properties = objType.GetProperties();
             StringBuilder sb = new StringBuilder();
 
+            sb.AppendFormat("{0}\t", obj.GetType().Name);
+
             foreach (var item in properties)
             {
-                sb.Append(string.Format("[{0}]={1},", item.Name, item.GetValue(obj)));
+                sb.Append(string.Format("[{0}]=[{1}],", item.Name, item.GetValue(obj)));
             }
 
             return sb.ToString();

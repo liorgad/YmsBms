@@ -8,17 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common;
+using Caliburn.Micro;
 
 namespace YtsBmsGUI
 {
     public partial class BatteryStats : UserControl
     {
         private BatteryStatViewModel viewModel;
+        private IEventAggregator evAgg { get; set; }
 
         public string Address { get; private set; }
         public BatteryStats(string address)
         {
             InitializeComponent();
+            evAgg = Common.EventAggregatorProvider.EventAggregator;
             Address = address;
             groupBox1.Text = string.Format("Address : {0}", address);
         }
@@ -32,7 +35,10 @@ namespace YtsBmsGUI
         private void button_delete_Click(object sender, EventArgs e)
         {
             BatteryStatViewModel vm;
-            SharedData.Default.BatteryPackContainer.TryRemove(Address.ToString(),out vm);
+            if(SharedData.Default.BatteryPackContainer.TryRemove(Address.ToString(),out vm))
+            {
+                evAgg.PublishOnUIThread(new BatteryRemoveView() { Address = vm.Address });
+            }
             this.Dispose();            
         }
     }
