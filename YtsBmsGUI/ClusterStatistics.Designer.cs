@@ -79,7 +79,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 93F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(358, 244);
-            this.tableLayoutPanel1.TabIndex = 0;            
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label_soc_precent
             // 
@@ -159,18 +159,20 @@
             // textBox_vlotage
             // 
             this.textBox_vlotage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_vlotage.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Voltage", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox_vlotage.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Voltage", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged, null, "N2"));
             this.textBox_vlotage.Location = new System.Drawing.Point(164, 7);
             this.textBox_vlotage.Name = "textBox_vlotage";
+            this.textBox_vlotage.ReadOnly = true;
             this.textBox_vlotage.Size = new System.Drawing.Size(155, 22);
             this.textBox_vlotage.TabIndex = 8;
             // 
             // textBox_current
             // 
             this.textBox_current.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_current.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Current", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox_current.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Current", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged, null, "N2"));
             this.textBox_current.Location = new System.Drawing.Point(164, 45);
             this.textBox_current.Name = "textBox_current";
+            this.textBox_current.ReadOnly = true;
             this.textBox_current.Size = new System.Drawing.Size(155, 22);
             this.textBox_current.TabIndex = 9;
             // 
@@ -204,6 +206,7 @@
             this.textBox_temperature.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Temperature", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox_temperature.Location = new System.Drawing.Point(164, 85);
             this.textBox_temperature.Name = "textBox_temperature";
+            this.textBox_temperature.ReadOnly = true;
             this.textBox_temperature.Size = new System.Drawing.Size(155, 22);
             this.textBox_temperature.TabIndex = 14;
             // 
