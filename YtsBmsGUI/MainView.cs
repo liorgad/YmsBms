@@ -366,7 +366,7 @@ namespace YtsBmsGUI
 
             group.IsSeries = false;
             group.Address = "cluster";
-            SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
+            //SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
 
             var clusterStatisticsView = new ClusterStatistics(group);
 

@@ -34,6 +34,9 @@ namespace Common
             var properties = objType.GetProperties().Where(prop => prop.IsDefined(typeof(T), false));
             StringBuilder sb = new StringBuilder();
 
+            sb.AppendFormat("{0}\t",obj.GetType().Name);
+            
+
             foreach (var item in properties)
             {
                 sb.Append(string.Format("[{0}]={1},",item.Name,item.GetValue(obj)));
