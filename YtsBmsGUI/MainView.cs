@@ -509,5 +509,15 @@ namespace YtsBmsGUI
             addBatteryToolStripMenuItem.Enabled = true;
             clusterToolStripMenuItem.Enabled = true;
         }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            BatteryStatViewModel viewModel;
+            if(SharedData.Default.BatteryPackContainer.TryGetValue(e.Node.Name, out viewModel))
+            {
+                var statUC = new BatteryStats(e.Node.Name, viewModel);
+                this.flowLayoutPanel1.Controls.Add(statUC);
+            }            
+        }
     }
 }
