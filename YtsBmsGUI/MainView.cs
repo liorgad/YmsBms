@@ -20,15 +20,15 @@ using YtsLogic;
 
 namespace YtsBmsGUI
 {
-    public partial class MainView : Form, 
+    public partial class MainView : Form,
         IHandle<ToolStripMessage>,
         IHandle<MessageBoxMessage>,
         IHandle<PortConnected>
     {
-        System.Timers.Timer samplingTimer;
+        //System.Timers.Timer samplingTimer;
         //Configuration.Defaulturation Configuration.Default = new Configuration.Defaulturation(); 
-        
-        IEventAggregator  evAgg { get; set; }
+
+        IEventAggregator evAgg { get; set; }
         MainLogic logic;
 
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -38,14 +38,15 @@ namespace YtsBmsGUI
             InitializeComponent();
 
             evAgg = EventAggregatorProvider.EventAggregator;
-            
+            evAgg.Subscribe(this);
+
             ImageList treeViewImageList = new ImageList();
-            treeViewImageList.Images.Add(Image.FromFile(@"Resources\fatcow-farm-fresh-battery.ico"));            
+            treeViewImageList.Images.Add(Image.FromFile(@"Resources\fatcow-farm-fresh-battery.ico"));
 
             treeView1.ImageList = treeViewImageList;
-        }      
-       
-       
+        }
+
+
 
         //private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         //{
@@ -61,8 +62,8 @@ namespace YtsBmsGUI
 
         //private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         //{
-           
-            
+
+
         //}
 
         //private void ParseCommand(FrameFormat frame)
@@ -223,22 +224,23 @@ namespace YtsBmsGUI
         //        logger.Error(ex, "Error sending message to pack");
         //    }
         //}
-        
+
 
         private void Form1_Load(object sender, EventArgs e)
-        {            
+        {
             logic = new MainLogic();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {            
+        {
+            logic.Dispose();
             //if(samplingTimer != null)
             //{
             //    samplingTimer.Stop();
             //    samplingTimer.Enabled = false;
             //    samplingTimer.Dispose();
             //}
-            
+
             //if(serialPort != null)
             //{
             //    serialPort.Close();
@@ -251,7 +253,7 @@ namespace YtsBmsGUI
             var commSelection = new CommSelection();
             var DialogResult = commSelection.ShowDialog(this);
             if (DialogResult == DialogResult.OK)
-            {  
+            {
                 if (!string.IsNullOrWhiteSpace(commSelection.SelectedComm))
                 {
                     if (File.Exists("configuration.json"))
@@ -277,9 +279,9 @@ namespace YtsBmsGUI
         {
             var newBatteryView = new NewBatteryView();
             var dialogResult = newBatteryView.ShowDialog(this);
-            if(dialogResult == DialogResult.OK)
+            if (dialogResult == DialogResult.OK)
             {
-                if(!SharedData.Default.BatteryPackContainer.ContainsKey(newBatteryView.Address.ToString()))
+                if (!SharedData.Default.BatteryPackContainer.ContainsKey(newBatteryView.Address.ToString()))
                 {
                     var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = newBatteryView.IsPartOfCluster };
                     viewModel.Address = newBatteryView.Address.ToString();
@@ -287,7 +289,7 @@ namespace YtsBmsGUI
                         newBatteryView.Address.ToString(),
                         viewModel);
 
-                    if(!viewModel.IsPartOfCluster)
+                    if (!viewModel.IsPartOfCluster)
                     {
                         var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
                         this.flowLayoutPanel1.Controls.Add(statUC);
@@ -297,20 +299,20 @@ namespace YtsBmsGUI
                 }
                 else
                 {
-                    if(!newBatteryView.IsPartOfCluster)
+                    if (!newBatteryView.IsPartOfCluster)
                     {
                         BatteryStatViewModel viewModel;
-                        bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(newBatteryView.Address.ToString(),out viewModel);
-                        if(succeeded)
+                        bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(newBatteryView.Address.ToString(), out viewModel);
+                        if (succeeded)
                         {
                             viewModel.IsPartOfCluster = newBatteryView.IsPartOfCluster;
                             var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
                             this.flowLayoutPanel1.Controls.Add(statUC);
-                        }                        
+                        }
                     }
                 }
-                
-                treeView1.Nodes.Add(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address),0);
+
+                treeView1.Nodes.Add(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
                 logger.Info(string.Format("Added Battery : {0}", newBatteryView.Address));
             }
         }
@@ -320,66 +322,16 @@ namespace YtsBmsGUI
             var addresses = SharedData.Default.BatteryPackContainer.Keys.ToList();
             var clusterView = new ClusterView(addresses);
             var dialogResult = clusterView.ShowDialog(this);
-            if(dialogResult == DialogResult.OK)
+            if (dialogResult == DialogResult.OK)
             {
                 if (clusterView.IsSerialConnected)
                 {
-                    if (clusterView.SelectedBatteriesGroup1.Count > 0 && clusterView.SelectedBatteriesGroup2.Count > 0)
-                    {
-                        var vmGroup1 = SharedData.Default.BatteryPackContainer.Values.Where((vm) => clusterView.SelectedBatteriesGroup1.Contains(vm.Address));
-                        var group1 = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group1",
-                        vmGroup1);
-
-                        var vmGroup2 = SharedData.Default.BatteryPackContainer.Values.Where((vm) => clusterView.SelectedBatteriesGroup2.Contains(vm.Address));
-                        var group2 = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group2",
-                            vmGroup2);
-
-                        var cluster = new List<SeriesStatViewModel>();
-                        cluster.Add(group1);
-                        cluster.Add(group2);
-
-                        var clusterVm = new ClusterStatViewModel(WindowsFormsSynchronizationContext.Current,
-                            cluster);
-
-                        SharedData.Default.BatteryPackContainer.TryAdd("cluster",clusterVm);
-
-
-
-                        //SharedData.Default.BatteryPackContainer.TryAdd(
-                        //    viewModel.Address,
-                        //    viewModel);
-
-                        var clusterStatisticsView = new ClusterStatistics(clusterVm);
-
-                        this.flowLayoutPanel1.Controls.Clear();
-                        this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
-                    }
+                    CreateSeries(clusterView.SelectedBatteriesGroup1, clusterView.SelectedBatteriesGroup2);
                 }
                 else if (clusterView.SelectedBatteriesGroup1.Count > 0)/* && clusterView.SelectedBatteriesGroup2.Count == 0 ||
                     clusterView.SelectedBatteriesGroup1.Count == 0 && clusterView.SelectedBatteriesGroup2.Count > 0)*/
                 {
-                    IEnumerable<BatteryStatViewModel> vmGroup;
-                    SeriesStatViewModel group;
-                    if (clusterView.SelectedBatteriesGroup1.Count > 0)
-                    {
-                        vmGroup = SharedData.Default.BatteryPackContainer.Values.Where((vm) => clusterView.SelectedBatteriesGroup1.Contains(vm.Address));
-                        group = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group1",
-                        vmGroup);
-                    }
-                    else
-                    {
-                        vmGroup = SharedData.Default.BatteryPackContainer.Values.Where((vm) => clusterView.SelectedBatteriesGroup2.Contains(vm.Address));
-                        group = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group2",
-                            vmGroup);
-                    }
-
-
-                    SharedData.Default.BatteryPackContainer.TryAdd("cluster",group);
-
-                    var clusterStatisticsView = new ClusterStatistics(group);
-
-                    this.flowLayoutPanel1.Controls.Clear();
-                    this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+                    CreateParallel(clusterView.SelectedBatteriesGroup1, clusterView.SelectedBatteriesGroup2);
 
                 }
                 else
@@ -393,6 +345,70 @@ namespace YtsBmsGUI
 
             }
 
+        }
+
+        private void CreateParallel(List<string> selectedBatteriesGroup1, List<string> selectedBatteriesGroup2)
+        {
+            IEnumerable<BatteryStatViewModel> vmGroup;
+            SeriesStatViewModel group;
+            if (selectedBatteriesGroup1.Count > 0)
+            {
+                vmGroup = SharedData.Default.BatteryPackContainer.Values.Where((vm) => selectedBatteriesGroup1.Contains(vm.Address));
+                group = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group1",
+                vmGroup);
+            }
+            else
+            {
+                vmGroup = SharedData.Default.BatteryPackContainer.Values.Where((vm) => selectedBatteriesGroup2.Contains(vm.Address));
+                group = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group2",
+                    vmGroup);
+            }
+
+            group.IsSeries = false;
+            group.Address = "cluster";
+            SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
+
+            var clusterStatisticsView = new ClusterStatistics(group);
+
+            this.flowLayoutPanel1.Controls.Clear();
+            this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+        }
+
+        private void CreateSeries(List<string> selectedBatteriesGroup1, List<string> selectedBatteriesGroup2)
+        {
+            if (selectedBatteriesGroup1.Count > 0 && selectedBatteriesGroup2.Count > 0)
+            {
+                var vmGroup1 = SharedData.Default.BatteryPackContainer.Values.Where((vm) => selectedBatteriesGroup1.Contains(vm.Address));
+                var group1 = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group1",
+                vmGroup1);
+
+                var vmGroup2 = SharedData.Default.BatteryPackContainer.Values.Where((vm) => selectedBatteriesGroup2.Contains(vm.Address));
+                var group2 = new SeriesStatViewModel(WindowsFormsSynchronizationContext.Current, "Group2",
+                    vmGroup2);
+
+                var cluster = new List<SeriesStatViewModel>();
+                cluster.Add(group1);
+                cluster.Add(group2);
+
+                var clusterVm = new ClusterStatViewModel(WindowsFormsSynchronizationContext.Current,
+                    cluster);
+
+                clusterVm.Address = "cluster";
+                clusterVm.IsSeries = true;
+
+                SharedData.Default.BatteryPackContainer.TryAdd("cluster", clusterVm);
+
+
+
+                //SharedData.Default.BatteryPackContainer.TryAdd(
+                //    viewModel.Address,
+                //    viewModel);
+
+                var clusterStatisticsView = new ClusterStatistics(clusterVm);
+
+                this.flowLayoutPanel1.Controls.Clear();
+                this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -413,7 +429,7 @@ namespace YtsBmsGUI
             }
 
             // Reset the cursor to the default for all controls.
-           // Cursor.Current = Cursors.Default;
+            // Cursor.Current = Cursors.Default;
 
             // Begin repainting the TreeView.
             treeView1.EndUpdate();
@@ -422,7 +438,7 @@ namespace YtsBmsGUI
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SharedData.Default.Save();
-            MessageBox.Show(this,"Configuration Saved","Save");                
+            MessageBox.Show(this, "Configuration Saved", "Save");
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -430,10 +446,27 @@ namespace YtsBmsGUI
             SharedData.Default.Load(WindowsFormsSynchronizationContext.Current);
             if (SharedData.Default.BatteryPackContainer.ContainsKey("cluster"))
             {
-                var group = SharedData.Default.BatteryPackContainer["cluster"];
-                var clusterStatisticsView = new ClusterStatistics(group);                
-                this.flowLayoutPanel1.Controls.Clear();
-                this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+                BatteryStatViewModel clusterView;
+                if (SharedData.Default.BatteryPackContainer.TryRemove("cluster", out clusterView))
+                {
+                    if (clusterView.IsSeries)
+                    {
+                        ClusterStatViewModel cluster = clusterView as ClusterStatViewModel;
+                        SeriesStatViewModel series1 = cluster.SeriesVm[0];
+                        SeriesStatViewModel series2 = cluster.SeriesVm[1];
+
+                        var list1 = series1.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+                        var list2 = series2.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+
+                        CreateSeries(list1, list2);
+                    }
+                    else
+                    {
+                        SeriesStatViewModel cluster = clusterView as SeriesStatViewModel;
+                        var list1 = cluster.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+                        CreateParallel(list1, null);
+                    }
+                }
             }
             else
             {
@@ -445,13 +478,6 @@ namespace YtsBmsGUI
                     this.flowLayoutPanel1.Controls.Add(statUC);
                 }
             }
-
-            foreach (var item in SharedData.Default.BatteryPackContainer.Values)
-            {
-                
-            }
-
-
         }
 
         void IHandle<ToolStripMessage>.Handle(ToolStripMessage message)
@@ -461,7 +487,7 @@ namespace YtsBmsGUI
 
         void IHandle<MessageBoxMessage>.Handle(MessageBoxMessage message)
         {
-            MessageBox.Show(this,message.Message,message.Title);
+            MessageBox.Show(this, message.Message, message.Title);
         }
 
         void IHandle<PortConnected>.Handle(PortConnected message)

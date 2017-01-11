@@ -25,7 +25,7 @@ namespace Common
         private ushort temperatureState;
         private ushort voltageState;
         private Color protectionBackColor = Color.Transparent;
-        
+
 
         public SynchronizationContext SyncCtx { get; set; }
 
@@ -127,7 +127,7 @@ namespace Common
 
         public virtual int Temperature
         {
-            get { return (this.temperature -40); }
+            get { return (this.temperature - 40); }
             set
             {
                 if (value != this.temperature)
@@ -208,7 +208,7 @@ namespace Common
         public virtual string Protection
         {
             get
-            {                
+            {
                 return this.protection;
             }
             set
@@ -221,6 +221,8 @@ namespace Common
                 }
             }
         }
+
+        public virtual bool IsSeries { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -236,7 +238,7 @@ namespace Common
                     PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
                 }, null);
             }
-        }       
+        }
 
         public BatteryStatViewModel(SynchronizationContext syncCtx)
         {
@@ -246,7 +248,7 @@ namespace Common
         public override string ToString()
         {
             return string.Format("Address={0} Voltage={1} Current={2} Temp={3} SOC={4} DFET={5} CFET={6} Protection={7} ChargeState={8} TempState={9} VoltState={10}",
-                Address,Voltage,Current,Temperature,SOC,DFET,CFET,Protection,ChargeState,TemperatureState,VoltageState);
+                Address, Voltage, Current, Temperature, SOC, DFET, CFET, Protection, ChargeState, TemperatureState, VoltageState);
         }
 
         public virtual void Start() { }

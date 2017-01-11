@@ -9,17 +9,20 @@ namespace Common
 {
     public class ClusterStatViewModel : BatteryStatViewModel, IDisposable
     {
-        
-        private List<SeriesStatViewModel> seriesVm;
-        private System.Threading.Timer updateTimer;
-        public ClusterStatViewModel(SynchronizationContext syncCtx,List<SeriesStatViewModel> series) : base(syncCtx)
+
+        public List<SeriesStatViewModel> SeriesVm
         {
-            this.seriesVm = series;
+            get; set;
+        }
+        private System.Threading.Timer updateTimer;
+        public ClusterStatViewModel(SynchronizationContext syncCtx, List<SeriesStatViewModel> series) : base(syncCtx)
+        {
+            this.SeriesVm = series;
 
             Start();
         }
 
-         public override void Start()
+        public override void Start()
         {
             updateTimer = new Timer((s) =>
             {
@@ -30,15 +33,15 @@ namespace Common
 
         public void UpdateProperties()
         {
-            SOC = Convert.ToInt32(seriesVm.Select(ser => ser.SOC).Min());
+            SOC = Convert.ToInt32(SeriesVm.Select(ser => ser.SOC).Min());
 
-            Voltage = seriesVm.Select(bvm => bvm.Voltage).Sum();
+            Voltage = SeriesVm.Select(bvm => bvm.Voltage).Sum();
 
-            Current = seriesVm.Select(bvm => bvm.Current).Average();
+            Current = SeriesVm.Select(bvm => bvm.Current).Average();
 
-            Temperature = seriesVm.Select(bvm => bvm.Temperature).Max();
+            Temperature = SeriesVm.Select(bvm => bvm.Temperature).Max();
 
-            var diff = Math.Abs(seriesVm[0].Voltage - seriesVm[1].Voltage);
+            var diff = Math.Abs(SeriesVm[0].Voltage - SeriesVm[1].Voltage);
 
             if (diff > Common.Configuration.Default.VoltageDifferenceThreshold)
             {
@@ -53,19 +56,19 @@ namespace Common
         }
 
         public override double Voltage { get; set; }
-        public override int Temperature { get; set; }
+        public override int Temperature { get; set; }        
 
         public void Dispose()
         {
-            if(null != seriesVm && seriesVm.Count > 0)
+            if (null != SeriesVm && SeriesVm.Count > 0)
             {
-                foreach (var item in seriesVm)
+                foreach (var item in SeriesVm)
                 {
                     item.Dispose();
                 }
             }
 
-            if(null != updateTimer)
+            if (null != updateTimer)
             {
                 updateTimer.Dispose();
             }

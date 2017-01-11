@@ -11,16 +11,16 @@ namespace Common
 {
     public class SeriesStatViewModel : BatteryStatViewModel, IDisposable
     {
-        IEnumerable<BatteryStatViewModel> seriesBatteriesAddresses;
+        public IEnumerable<BatteryStatViewModel> SeriesBatteriesAddresses { get; set; }
 
-        Dictionary<string,PropertyInfo> properyInfoMap;
+        Dictionary<string, PropertyInfo> properyInfoMap;
         System.Threading.Timer updateTimer;
-        public SeriesStatViewModel(SynchronizationContext syncCtx,string name,IEnumerable<BatteryStatViewModel> selectedBatteries) : base(syncCtx)
+        public SeriesStatViewModel(SynchronizationContext syncCtx, string name, IEnumerable<BatteryStatViewModel> selectedBatteries) : base(syncCtx)
         {
             //properyInfoMap =(this.GetType().GetProperties().ToDictionary(pi => pi.Name));
             this.Address = string.Format("{0}({1})", name, selectedBatteries.Select(bvm => bvm.Address).Aggregate((addr1, addr2) => string.Format("{0},{1}", addr1, addr2)));
-            seriesBatteriesAddresses = selectedBatteries;
-            //seriesBatteriesAddresses = SharedData.Default.BatteryPackContainer.Values.Where(bp => selectedBatteries.Contains(bp.Address));
+            SeriesBatteriesAddresses = selectedBatteries;
+            //SeriesBatteriesAddresses = SharedData.Default.BatteryPackContainer.Values.Where(bp => selectedBatteries.Contains(bp.Address));
 
             //foreach (var item in clusterBatteriesAddresses)
             //{
@@ -31,7 +31,7 @@ namespace Common
         }
 
         public override void Start()
-        {            
+        {
             updateTimer = new Timer((s) =>
             {
                 UpdateSeriesProperties();
@@ -41,19 +41,19 @@ namespace Common
 
         public void UpdateSeriesProperties()
         {
-            SOC = Convert.ToInt32(seriesBatteriesAddresses.Select(bvm => bvm.SOC).Average());
+            SOC = Convert.ToInt32(SeriesBatteriesAddresses.Select(bvm => bvm.SOC).Average());
 
-            Voltage = seriesBatteriesAddresses.Select(bvm => bvm.Voltage).Average();
+            Voltage = SeriesBatteriesAddresses.Select(bvm => bvm.Voltage).Average();
 
-            Current = seriesBatteriesAddresses.Select(bvm => bvm.Current).Sum();
+            Current = SeriesBatteriesAddresses.Select(bvm => bvm.Current).Sum();
 
-            Temperature = seriesBatteriesAddresses.Select(bvm => bvm.Temperature).Max();
+            Temperature = SeriesBatteriesAddresses.Select(bvm => bvm.Temperature).Max();
 
-            ChargeState = seriesBatteriesAddresses.Select(bvm => bvm.ChargeState).Aggregate((c1, c2) => (ushort)(c1 | c1));
+            ChargeState = SeriesBatteriesAddresses.Select(bvm => bvm.ChargeState).Aggregate((c1, c2) => (ushort)(c1 | c1));
 
-            TemperatureState = seriesBatteriesAddresses.Select(bvm => bvm.TemperatureState).Aggregate((c1, c2) => (ushort)(c1 | c1));
+            TemperatureState = SeriesBatteriesAddresses.Select(bvm => bvm.TemperatureState).Aggregate((c1, c2) => (ushort)(c1 | c1));
 
-            VoltageState = seriesBatteriesAddresses.Select(bvm => bvm.VoltageState).Aggregate((c1, c2) => (ushort)(c1 | c1));
+            VoltageState = SeriesBatteriesAddresses.Select(bvm => bvm.VoltageState).Aggregate((c1, c2) => (ushort)(c1 | c1));
 
             Debug.WriteLine(Address + "SOC=" + SOC + " Voltage=" + Voltage + " Current=" + Current + " Temp=" + Temperature);
         }
@@ -61,18 +61,18 @@ namespace Common
         public override double Voltage
         {
             get;
-            set;           
+            set;
         }
 
         public override int Temperature
         {
             get;
-            set;            
+            set;
         }
 
         public void Dispose()
         {
-            if(null != updateTimer)
+            if (null != updateTimer)
             {
                 updateTimer.Dispose();
             }
