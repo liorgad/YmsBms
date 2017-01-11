@@ -1,0 +1,1 @@
+{"BaudRate":9600,"DataBits":8,"HandShakeType":1,"ParityType":0,"PortName":"COM3","ReadTimeout":500,"SamplingTimerIntervalMilisec":2000,"StopBitsType":1,"VoltageDifferenceThreshold":1.5,"WriteTimeout":500,"WaitTimePeriodBetweenCommandSendMilliSec" : 500}
