@@ -28,6 +28,8 @@ namespace Common
         [DataMember]
         public ConcurrentDictionary<string, BatteryStatViewModel> BatteryPackContainer = new ConcurrentDictionary<string, BatteryStatViewModel>();
 
+        public ClusterStatViewModel ClusterStatisticsVM { get; set; }
+
         public void Load(SynchronizationContext syncCtx)
         {
             if (File.Exists("data.json"))

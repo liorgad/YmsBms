@@ -393,10 +393,12 @@ namespace YtsBmsGUI
                 var clusterVm = new ClusterStatViewModel(WindowsFormsSynchronizationContext.Current,
                     cluster);
 
+                
+
                 clusterVm.Address = "cluster";
                 clusterVm.IsSeries = true;
 
-                SharedData.Default.BatteryPackContainer.TryAdd("cluster", clusterVm);
+                SharedData.Default.ClusterStatisticsVM = clusterVm;
 
 
 
@@ -444,38 +446,50 @@ namespace YtsBmsGUI
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SharedData.Default.Load(WindowsFormsSynchronizationContext.Current);
+
             if (SharedData.Default.BatteryPackContainer.ContainsKey("cluster"))
             {
-                BatteryStatViewModel clusterView;
-                if (SharedData.Default.BatteryPackContainer.TryRemove("cluster", out clusterView))
-                {
-                    if (clusterView.IsSeries)
-                    {
-                        ClusterStatViewModel cluster = clusterView as ClusterStatViewModel;
-                        SeriesStatViewModel series1 = cluster.SeriesVm[0];
-                        SeriesStatViewModel series2 = cluster.SeriesVm[1];
-
-                        var list1 = series1.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-                        var list2 = series2.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-
-                        CreateSeries(list1, list2);
-                    }
-                    else
-                    {
-                        SeriesStatViewModel cluster = clusterView as SeriesStatViewModel;
-                        var list1 = cluster.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-                        CreateParallel(list1, null);
-                    }
-                }
+                HandleClusterLoad();
             }
             else
             {
-                foreach (var item in SharedData.Default.BatteryPackContainer)
+                HandleBatteriesLoad();
+            }
+        }
+
+        private void HandleBatteriesLoad()
+        {
+            foreach (var item in SharedData.Default.BatteryPackContainer)
+            {
+                var addr = item.Key;
+                var viewModel = item.Value;
+                var statUC = new BatteryStats(addr, viewModel);
+                this.flowLayoutPanel1.Controls.Add(statUC);
+            }
+        }
+
+        private void HandleClusterLoad()
+        {
+            BatteryStatViewModel clusterView;
+                        
+            if (SharedData.Default.BatteryPackContainer.TryRemove("cluster", out clusterView))
+            {
+                if (clusterView.IsSeries)
                 {
-                    var addr = item.Key;
-                    var viewModel = item.Value;
-                    var statUC = new BatteryStats(addr, viewModel);
-                    this.flowLayoutPanel1.Controls.Add(statUC);
+                    ClusterStatViewModel cluster = clusterView as ClusterStatViewModel;
+                    SeriesStatViewModel series1 = cluster.SeriesVm[0];
+                    SeriesStatViewModel series2 = cluster.SeriesVm[1];
+
+                    var list1 = series1.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+                    var list2 = series2.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+
+                    CreateSeries(list1, list2);
+                }
+                else
+                {
+                    SeriesStatViewModel cluster = clusterView as SeriesStatViewModel;
+                    var list1 = cluster.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
+                    CreateParallel(list1, null);
                 }
             }
         }
