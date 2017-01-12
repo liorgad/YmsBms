@@ -55,6 +55,10 @@ namespace Common
 
             VoltageState = SeriesBatteriesAddresses.Select(bvm => bvm.VoltageState).Aggregate((c1, c2) => (ushort)(c1 | c1));
 
+            Protection = SeriesBatteriesAddresses.Where(bvm => bvm.Protection != string.Empty).Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
+                    Aggregate((a, b) => string.Format("{0}{1}{2}", a, Environment.NewLine, b));
+            ProtectionBackColor = Protection != string.Empty ? System.Drawing.Color.Orange : System.Drawing.Color.Transparent;
+
             Debug.WriteLine(Address + "SOC=" + SOC + " Voltage=" + Voltage + " Current=" + Current + " Temp=" + Temperature);
         }
 

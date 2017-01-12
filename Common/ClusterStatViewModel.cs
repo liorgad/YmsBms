@@ -50,8 +50,9 @@ namespace Common
             }
             else
             {
-                Protection = string.Empty;
-                ProtectionBackColor = System.Drawing.Color.Transparent;
+                Protection = SeriesVm.Where(bvm => bvm.Protection != string.Empty).Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
+                    Aggregate((a, b) => string.Format("{0}{1}{2}",a,Environment.NewLine,b));
+                ProtectionBackColor = Protection != string.Empty ? System.Drawing.Color.Orange : System.Drawing.Color.Transparent;
             }
         }
 
