@@ -23,14 +23,12 @@ namespace YtsBmsGUI
     public partial class MainView : Form,
         IHandle<ToolStripMessage>,
         IHandle<MessageBoxMessage>,
-        IHandle<PortConnected>,
-        IHandle<BatteryRemoveView>
+        IHandle<PortConnected>
     {
         //System.Timers.Timer samplingTimer;
         //Configuration.Defaulturation Configuration.Default = new Configuration.Defaulturation(); 
 
         IEventAggregator evAgg { get; set; }
-        Dictionary<string, Control> batteryAddressCtrlMap = new Dictionary<string, Control>();
         MainLogic logic;
 
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -38,8 +36,6 @@ namespace YtsBmsGUI
         public MainView()
         {
             InitializeComponent();
-
-            treeView1.NodeMouseDoubleClick += TreeView1_NodeMouseDoubleClick;
 
             evAgg = EventAggregatorProvider.EventAggregator;
             evAgg.Subscribe(this);
@@ -50,55 +46,7 @@ namespace YtsBmsGUI
             treeView1.ImageList = treeViewImageList;
         }
 
-        private void TreeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            ShowBatteryStat(e.Node.Name);
-        }
 
-        private void ShowBatteryStat(string name)
-        {
-            try
-            {
-                BatteryStatViewModel viewModel;
-                if (SharedData.Default.BatteryPackContainer.TryGetValue(name, out viewModel))
-                {
-                    var statUC = new BatteryStats(name, viewModel);
-                    this.flowLayoutPanel1.SuspendLayout();
-                    if (!this.batteryAddressCtrlMap.ContainsKey(name))
-                    {
-                        this.flowLayoutPanel1.Controls.Add(statUC);
-                        this.batteryAddressCtrlMap.Add(name, statUC);
-                    }
-                    this.flowLayoutPanel1.ResumeLayout(true);
-                }
-                else
-                {
-                    RemoveFromTreeView(name);
-                }
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, "Error adding battery statistics view");
-            }
-        }
-
-        private void RemoveBatteryStat(string name)
-        {
-            try
-            {
-                this.flowLayoutPanel1.SuspendLayout();
-                if(batteryAddressCtrlMap.ContainsKey(name))
-                {
-                    this.flowLayoutPanel1.Controls.Remove(batteryAddressCtrlMap[name]);
-                    batteryAddressCtrlMap.Remove(name);
-                }
-                this.flowLayoutPanel1.ResumeLayout(true);
-            }
-            catch(Exception e)
-            {
-                logger.Error(e, "Error removing battery statistics view");
-            }
-        }
 
         //private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
         //{
@@ -343,9 +291,8 @@ namespace YtsBmsGUI
 
                     if (!viewModel.IsPartOfCluster)
                     {
-                        ShowBatteryStat(viewModel.Address);
-                        //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
-                        //this.flowLayoutPanel1.Controls.Add(statUC);
+                        var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
+                        this.flowLayoutPanel1.Controls.Add(statUC);
                     }
 
                     //toolStripLabel1.Text = string.Format("Battery added : {0}", viewModel.Address);
@@ -359,28 +306,14 @@ namespace YtsBmsGUI
                         if (succeeded)
                         {
                             viewModel.IsPartOfCluster = newBatteryView.IsPartOfCluster;
-
-                            ShowBatteryStat(viewModel.Address);
-                            //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
-                            //this.flowLayoutPanel1.Controls.Add(statUC);
+                            var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
+                            this.flowLayoutPanel1.Controls.Add(statUC);
                         }
                     }
                 }
 
-                AddToTreeView(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
-
+                treeView1.Nodes.Add(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
                 logger.Info(string.Format("Added Battery : {0}", newBatteryView.Address));
-            }
-        }
-
-        private void AddToTreeView(string key,string text,int imageIndex)
-        {
-            if (!treeView1.Nodes.ContainsKey(key))
-            {
-                treeView1.BeginUpdate();
-
-                treeView1.Nodes.Add(key, text, imageIndex);
-                treeView1.EndUpdate();
             }
         }
 
@@ -413,6 +346,7 @@ namespace YtsBmsGUI
             }
 
         }
+
         private void CreateParallel(List<string> selectedBatteriesGroup1, List<string> selectedBatteriesGroup2)
         {
             IEnumerable<BatteryStatViewModel> vmGroup;
@@ -432,7 +366,7 @@ namespace YtsBmsGUI
 
             group.IsSeries = false;
             group.Address = "cluster";
-            //SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
+            SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
 
             var clusterStatisticsView = new ClusterStatistics(group);
 
@@ -477,7 +411,31 @@ namespace YtsBmsGUI
                 this.flowLayoutPanel1.Controls.Clear();
                 this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
             }
-        }       
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+            // Display a wait cursor while the TreeNodes are being created.
+            //Cursor.Current = Cursors.WaitCursor;
+
+            // Suppress repainting the TreeView until all the objects have been created.
+            treeView1.BeginUpdate();
+
+            // Clear the TreeView each time the method is called.
+            treeView1.Nodes.Clear();
+
+            foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
+            {
+                treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
+            }
+
+            // Reset the cursor to the default for all controls.
+            // Cursor.Current = Cursors.Default;
+
+            // Begin repainting the TreeView.
+            treeView1.EndUpdate();
+        }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -537,7 +495,7 @@ namespace YtsBmsGUI
         }
 
         void IHandle<ToolStripMessage>.Handle(ToolStripMessage message)
-        {            
+        {
             this.toolStripLabel1.Text = message.Text;
         }
 
@@ -552,55 +510,14 @@ namespace YtsBmsGUI
             clusterToolStripMenuItem.Enabled = true;
         }
 
-        
-        void IHandle<BatteryRemoveView>.Handle(BatteryRemoveView message)
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            RemoveBatteryStat(message.Address);            
-        }
-
-        private void RemoveFromTreeView(string key)
-        {
-            // Display a wait cursor while the TreeNodes are being created.
-            Cursor.Current = Cursors.WaitCursor;
-
-            // Suppress repainting the TreeView until all the objects have been created.
-            treeView1.BeginUpdate();
-
-            // Clear the TreeView each time the method is called.
-            //treeView1.Nodes.Clear();
-
-            treeView1.Nodes.RemoveByKey(key);
-
-            //foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
-            //{
-            //    treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
-            //}
-
-            // Reset the cursor to the default for all controls.
-            // Cursor.Current = Cursors.Default;
-
-            // Begin repainting the TreeView.
-            treeView1.EndUpdate();
-        }
-
-        private void showToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var selectedNode = treeView1.SelectedNode;
-            if(null != selectedNode)
+            BatteryStatViewModel viewModel;
+            if(SharedData.Default.BatteryPackContainer.TryGetValue(e.Node.Name, out viewModel))
             {
-                ShowBatteryStat(selectedNode.Name);
-            }
-        }
-
-        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var selectedNode = treeView1.SelectedNode;
-            if (null != selectedNode)
-            {
-                RemoveBatteryStat(selectedNode.Name);
-                RemoveFromTreeView(selectedNode.Name);
-                logic.RemoveBattery(selectedNode.Name);
-            }
+                var statUC = new BatteryStats(e.Node.Name, viewModel);
+                this.flowLayoutPanel1.Controls.Add(statUC);
+            }            
         }
     }
 }

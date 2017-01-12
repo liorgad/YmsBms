@@ -8,12 +8,15 @@ using System.IO.Ports;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using Newtonsoft.Json;
+using NLog;
 
 namespace Common
 {
     [DataContract]
     public class Configuration
     {
+        private static Logger logger = NLog.LogManager.GetCurrentClassLogger(); 
+
         [DataMember]
         public string PortName { get; set; }
 
@@ -74,14 +77,21 @@ namespace Common
 
 
         public void Save()
-        {   
-            using (var stream = File.OpenWrite("configuration.json"))
+        {
+            try
             {
-                //DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Configuration));
-                //ser.WriteObject(stream, config);
-                var output = JsonConvert.SerializeObject(config);
-                var bytes = Encoding.Default.GetBytes(output);
-                stream.Write(bytes, 0, bytes.Length);
+                using (var stream = File.OpenWrite("configuration.json"))
+                {
+                    //DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Configuration));
+                    //ser.WriteObject(stream, config);
+                    var output = JsonConvert.SerializeObject(config);
+                    var bytes = Encoding.Default.GetBytes(output);
+                    stream.Write(bytes, 0, bytes.Length);
+                }
+            }
+            catch(Exception e)
+            {
+                logger.Error(e, "Save Error");
             }
         }
 

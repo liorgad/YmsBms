@@ -383,5 +383,16 @@ namespace YtsLogic
                 serialPort.Dispose();
             }
         }
+
+        public bool RemoveBattery(string name)
+        {
+            if(SharedData.Default.BatteryPackContainer.ContainsKey(name))
+            {
+                BatteryStatViewModel viewModel;
+                return SharedData.Default.BatteryPackContainer.TryRemove(name, out viewModel);
+            }
+
+            return true;
+        }
     }
 }

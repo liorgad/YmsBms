@@ -34,12 +34,22 @@ namespace YtsBmsGUI
 
         private void button_delete_Click(object sender, EventArgs e)
         {
-            BatteryStatViewModel vm;
-            if(SharedData.Default.BatteryPackContainer.TryRemove(Address.ToString(),out vm))
-            {
-                evAgg.PublishOnUIThread(new BatteryRemoveView() { Address = vm.Address });
-            }
+            //BatteryStatViewModel vm;
+            //if(SharedData.Default.BatteryPackContainer.TryRemove(Address.ToString(),out vm))
+            //{
+                evAgg.PublishOnUIThread(new BatteryRemoveView() { Address = this.Address });
+            //}
             this.Dispose();            
+        }
+
+        public override int GetHashCode()
+        {
+            if( null != viewModel)
+            {
+                return viewModel.GetHashCode();
+            }
+
+            return base.GetHashCode();
         }
     }
 }
