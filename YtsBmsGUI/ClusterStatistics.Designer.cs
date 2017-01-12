@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label_soc_precent = new System.Windows.Forms.Label();
-            this.clusterStatViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -46,10 +45,11 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.clusterStatViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clusterStatViewModelBindingSource)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.clusterStatViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -77,8 +77,8 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.45361F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.54639F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 93F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 46F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 81F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(358, 244);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -88,15 +88,11 @@
             this.label_soc_precent.AutoSize = true;
             this.label_soc_precent.BackColor = System.Drawing.Color.Transparent;
             this.label_soc_precent.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "SOC", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label_soc_precent.Location = new System.Drawing.Point(325, 154);
+            this.label_soc_precent.Location = new System.Drawing.Point(325, 131);
             this.label_soc_precent.Name = "label_soc_precent";
             this.label_soc_precent.Size = new System.Drawing.Size(30, 16);
             this.label_soc_precent.TabIndex = 7;
             this.label_soc_precent.Text = "0%";
-            // 
-            // clusterStatViewModelBindingSource
-            // 
-            this.clusterStatViewModelBindingSource.DataSource = typeof(Common.ClusterStatViewModel);
             // 
             // label1
             // 
@@ -132,7 +128,7 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 154);
+            this.label6.Location = new System.Drawing.Point(3, 131);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(155, 16);
             this.label6.TabIndex = 5;
@@ -144,14 +140,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(164, 119);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(155, 87);
+            this.panel1.Size = new System.Drawing.Size(155, 40);
             this.panel1.TabIndex = 7;
             // 
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar1.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.clusterStatViewModelBindingSource, "SOC", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.progressBar1.Location = new System.Drawing.Point(0, 30);
+            this.progressBar1.Location = new System.Drawing.Point(0, 7);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(155, 23);
             this.progressBar1.TabIndex = 6;
@@ -181,7 +177,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 218);
+            this.label7.Location = new System.Drawing.Point(3, 195);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(155, 16);
             this.label7.TabIndex = 12;
@@ -225,19 +221,24 @@
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Protection", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.clusterStatViewModelBindingSource, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(164, 212);
+            this.textBox1.Location = new System.Drawing.Point(164, 165);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(155, 29);
+            this.textBox1.Size = new System.Drawing.Size(191, 76);
             this.textBox1.TabIndex = 16;
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // clusterStatViewModelBindingSource
+            // 
+            this.clusterStatViewModelBindingSource.DataSource = typeof(Common.ClusterStatViewModel);
             // 
             // ClusterStatistics
             // 
@@ -248,9 +249,9 @@
             this.Size = new System.Drawing.Size(364, 265);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clusterStatViewModelBindingSource)).EndInit();
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.clusterStatViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }

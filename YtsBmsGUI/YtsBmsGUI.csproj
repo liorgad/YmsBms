@@ -176,6 +176,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\battery_pack_256.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\dantech.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

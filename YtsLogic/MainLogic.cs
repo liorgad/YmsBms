@@ -394,5 +394,15 @@ namespace YtsLogic
 
             return true;
         }
+
+        public bool AddCluster(BatteryStatViewModel clusterVm)
+        {
+            if (!SharedData.Default.BatteryPackContainer.ContainsKey(clusterVm.Address))
+            {                
+                return SharedData.Default.BatteryPackContainer.TryAdd(clusterVm.Address, clusterVm);
+            }
+
+            return true;
+        }
     }
 }

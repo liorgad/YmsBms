@@ -19,6 +19,8 @@ namespace Common
         {
             this.SeriesVm = series;
 
+            IsSeries = true;
+
             Start();
         }
 
@@ -50,9 +52,24 @@ namespace Common
             }
             else
             {
-                Protection = SeriesVm.Where(bvm => bvm.Protection != string.Empty).Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
-                    Aggregate((a, b) => string.Format("{0}{1}{2}",a,Environment.NewLine,b));
-                ProtectionBackColor = Protection != string.Empty ? System.Drawing.Color.Orange : System.Drawing.Color.Transparent;
+
+                var protecList = SeriesVm.Where(bvm => (bvm.ChargeState != 0) || (bvm.VoltageState != 0) || (bvm.TemperatureState != 0));
+
+                if (protecList.Count() > 0)
+                {
+                    Protection = protecList.Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
+                       Aggregate((a, b) => string.Format("{0}{1}{2}", a, Environment.NewLine, b));
+
+                    ProtectionBackColor = System.Drawing.Color.Orange;
+                }
+                else
+                {
+                     ProtectionBackColor =  System.Drawing.Color.Transparent;
+                }
+
+                //Protection = SeriesVm.Where(bvm => bvm.Protection != string.Empty).Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
+                //    Aggregate((a, b) => string.Format("{0}{1}{2}",a,Environment.NewLine,b));
+                
             }
         }
 
