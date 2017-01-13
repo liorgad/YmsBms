@@ -185,11 +185,11 @@ namespace YtsLogic
                 serialPort.PortName = portName;
                 serialPort.BaudRate = Configuration.Default.BaudRate;
                 serialPort.Parity = Configuration.Default.ParityType;
-                serialPort.DataBits = Configuration.Default.DataBits;
-                serialPort.StopBits = Configuration.Default.StopBitsType;
-                serialPort.Handshake = Configuration.Default.HandShakeType;
-                serialPort.ReadTimeout = Configuration.Default.ReadTimeout;
-                serialPort.WriteTimeout = Configuration.Default.WriteTimeout;
+                //serialPort.DataBits = Configuration.Default.DataBits;
+                //serialPort.StopBits = Configuration.Default.StopBitsType;
+                //serialPort.Handshake = Configuration.Default.HandShakeType;
+                //serialPort.ReadTimeout = Configuration.Default.ReadTimeout;
+                //serialPort.WriteTimeout = Configuration.Default.WriteTimeout;                
             }
         }
 
