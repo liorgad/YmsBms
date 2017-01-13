@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="BatteryStatViewModel.cs" />
     <Compile Include="ClusterStatViewModel.cs" />
+    <Compile Include="CommPort.cs" />
     <Compile Include="EventAggregatorProvider.cs" />
     <Compile Include="EventQueue.cs" />
     <Compile Include="Messages.cs" />
