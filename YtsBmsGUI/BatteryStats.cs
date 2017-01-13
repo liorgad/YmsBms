@@ -37,19 +37,12 @@ namespace YtsBmsGUI
             //BatteryStatViewModel vm;
             //if(SharedData.Default.BatteryPackContainer.TryRemove(Address.ToString(),out vm))
             //{
-                evAgg.PublishOnUIThread(new BatteryRemoveView() { Address = this.Address });
+            if (null != viewModel)
+            {
+                evAgg.PublishOnUIThread(new BatteryRemoveView() { Address = viewModel.Address });
+            }
             //}
             this.Dispose();            
-        }
-
-        public override int GetHashCode()
-        {
-            if( null != viewModel)
-            {
-                return viewModel.GetHashCode();
-            }
-
-            return base.GetHashCode();
         }
     }
 }

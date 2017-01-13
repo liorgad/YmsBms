@@ -75,7 +75,7 @@
             this.textBox_address.Location = new System.Drawing.Point(145, 8);
             this.textBox_address.Name = "textBox_address";
             this.textBox_address.Size = new System.Drawing.Size(136, 22);
-            this.textBox_address.TabIndex = 1;
+            this.textBox_address.TabIndex = 0;
             // 
             // button_ok
             // 
@@ -83,7 +83,7 @@
             this.button_ok.Location = new System.Drawing.Point(206, 81);
             this.button_ok.Name = "button_ok";
             this.button_ok.Size = new System.Drawing.Size(75, 23);
-            this.button_ok.TabIndex = 3;
+            this.button_ok.TabIndex = 1;
             this.button_ok.Text = "Ok";
             this.button_ok.UseVisualStyleBackColor = true;
             this.button_ok.Click += new System.EventHandler(this.button_ok_Click);

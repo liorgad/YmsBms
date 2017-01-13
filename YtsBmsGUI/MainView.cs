@@ -46,6 +46,7 @@ namespace YtsBmsGUI
 
             ImageList treeViewImageList = new ImageList();
             treeViewImageList.Images.Add(Image.FromFile(@"Resources\fatcow-farm-fresh-battery.ico"));
+            treeViewImageList.Images.Add(Image.FromFile(@"Resources\battery_pack_256.png"));
 
             treeView1.ImageList = treeViewImageList;
         }
@@ -55,15 +56,29 @@ namespace YtsBmsGUI
             ShowBatteryStat(e.Node.Name);
         }
 
-        private void ShowBatteryStat(string name)
+        private void ShowBatteryStat(string name,bool shouldClear = false)
         {
             try
             {
                 BatteryStatViewModel viewModel;
                 if (SharedData.Default.BatteryPackContainer.TryGetValue(name, out viewModel))
                 {
-                    var statUC = new BatteryStats(name, viewModel);
+                    Control statUC;
+                    if (viewModel.IsSeries)
+                    {
+                        statUC = new ClusterStatistics(viewModel);
+                    }
+                    else
+                    {
+                        statUC = new BatteryStats(name, viewModel);                        
+                    }
+                    
                     this.flowLayoutPanel1.SuspendLayout();
+                    if(shouldClear || viewModel.IsSeries)
+                    {
+                        this.flowLayoutPanel1.Controls.Clear();
+                        this.batteryAddressCtrlMap.Clear();
+                    }
                     if (!this.batteryAddressCtrlMap.ContainsKey(name))
                     {
                         this.flowLayoutPanel1.Controls.Add(statUC);
@@ -432,12 +447,18 @@ namespace YtsBmsGUI
 
             group.IsSeries = false;
             group.Address = "cluster";
+
+            logic.AddCluster(group);
             //SharedData.Default.BatteryPackContainer.TryAdd("cluster", group);
 
-            var clusterStatisticsView = new ClusterStatistics(group);
+            //var clusterStatisticsView = new ClusterStatistics(group);
 
-            this.flowLayoutPanel1.Controls.Clear();
-            this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+            ShowBatteryStat(group.Address, true);
+            //this.flowLayoutPanel1.Controls.Clear();
+            //this.batteryAddressCtrlMap.Clear();
+            //this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+
+            AddToTreeView(group.Address, "Cluster", 1);
         }
 
         private void CreateSeries(List<string> selectedBatteriesGroup1, List<string> selectedBatteriesGroup2)
@@ -464,18 +485,22 @@ namespace YtsBmsGUI
                 clusterVm.Address = "cluster";
                 clusterVm.IsSeries = true;
 
-                SharedData.Default.ClusterStatisticsVM = clusterVm;
+                //SharedData.Default.ClusterStatisticsVM = clusterVm;
 
-
+                logic.AddCluster(clusterVm);
 
                 //SharedData.Default.BatteryPackContainer.TryAdd(
                 //    viewModel.Address,
                 //    viewModel);
 
-                var clusterStatisticsView = new ClusterStatistics(clusterVm);
+                ShowBatteryStat(clusterVm.Address, true);
 
-                this.flowLayoutPanel1.Controls.Clear();
-                this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+                //var clusterStatisticsView = new ClusterStatistics(clusterVm);
+
+                //this.flowLayoutPanel1.Controls.Clear();
+                //this.flowLayoutPanel1.Controls.Add(clusterStatisticsView);
+
+                AddToTreeView(clusterVm.Address, "Cluster", 1);
             }
         }       
 

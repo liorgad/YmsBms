@@ -243,6 +243,7 @@ namespace Common
         public BatteryStatViewModel(SynchronizationContext syncCtx)
         {
             this.SyncCtx = syncCtx;
+            IsSeries = false;
         }
 
         public override string ToString()
