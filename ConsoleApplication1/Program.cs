@@ -109,10 +109,14 @@ namespace ConsoleApplication1
 
             #endregion
 
+            CommPort port = new CommPort();
+            port.InitializePort("COM3");
+            port.Open();            
+
             FrameFormat test = new FrameFormat()
             {
                 SOI = ':',
-                Address = 1,
+                Address = 4,
                 Cmd = (byte)Command.RealTimeData,                
                 Version = (byte)GenericParser.Version.Version82,                
                 EOI = '~'
@@ -121,6 +125,15 @@ namespace ConsoleApplication1
             Console.WriteLine(test.AsString);
 
             Console.ReadKey();
+
+            if(port.IsOpen)
+            {
+                var result = port.SendReceive(test.AsString).Result;
+
+                Console.WriteLine(result);
+            }
+
+            return;
 
             RealtimeDataMap_V82 rtm1 = new RealtimeDataMap_V82()
             {
