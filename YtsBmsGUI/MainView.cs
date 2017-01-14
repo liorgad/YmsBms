@@ -352,9 +352,11 @@ namespace YtsBmsGUI
                 {
                     var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = newBatteryView.IsPartOfCluster };
                     viewModel.Address = newBatteryView.Address.ToString();
-                    SharedData.Default.BatteryPackContainer.TryAdd(
-                        newBatteryView.Address.ToString(),
-                        viewModel);
+
+                    logic.AddBattery(viewModel);
+                    //SharedData.Default.BatteryPackContainer.TryAdd(
+                    //    newBatteryView.Address.ToString(),
+                    //    viewModel);
 
                     if (!viewModel.IsPartOfCluster)
                     {

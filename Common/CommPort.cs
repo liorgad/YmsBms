@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
@@ -9,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class CommPort
+    public class CommPort : IDisposable
     {
         SerialPort serialPort;
+        IEventAggregator evAgg;
+        private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
         
         public bool IsOpen
         {
@@ -23,17 +26,19 @@ namespace Common
 
         public CommPort()
         {
-
+            evAgg = EventAggregatorProvider.EventAggregator;
         }      
 
         public async Task<string> SendReceive(string data)
         {
-            var bytes = Encoding.ASCII.GetBytes(data);
-            if(serialPort.IsOpen)
-            {
-                Stream strm = serialPort.BaseStream;
 
-                await strm.WriteAsync(bytes, 0, bytes.Length);
+            SendWrite(data);
+
+            if (serialPort.IsOpen)
+            {
+                //var bytes = Encoding.ASCII.GetBytes(data);
+                //Stream strm = serialPort.BaseStream;
+                //await strm.WriteAsync(bytes, 0, bytes.Length);
                 byte[] buffer = new byte[1024];
                 var bytesRead = await serialPort.BaseStream.ReadAsync(buffer, 0, buffer.Length);
                 byte[] resultBuffer = new byte[bytesRead];
@@ -42,6 +47,18 @@ namespace Common
             }
 
             return null;
+        }
+
+        public async void SendWrite(string data)
+        {
+            locker.EnterWriteLock();
+            var bytes = Encoding.ASCII.GetBytes(data);
+            if (serialPort.IsOpen)
+            {
+                Stream strm = serialPort.BaseStream;
+                await strm.WriteAsync(bytes, 0, bytes.Length);
+            }
+            locker.ExitWriteLock();
         }
 
         public static string[] GetPorts()
@@ -67,6 +84,38 @@ namespace Common
         public void Open()
         {
             serialPort.Open();
+
+            if (serialPort.IsOpen)
+            {
+                evAgg.PublishOnUIThread(new ToolStripMessage()
+                {
+                    Text = string.Format("Connected : {0} {1} {2}", serialPort.PortName,
+                    serialPort.BaudRate, serialPort.Parity)
+                    //Text = string.Format("Connected : {0}", portName)
+                });
+            }
+        }
+
+        public void Dispose()
+        {
+            if (null != serialPort)
+            {
+                serialPort.Dispose();
+            }
+            else
+            {
+                //toolStripLabel1.Text = string.Format("Not Connected");
+
+                evAgg.PublishOnUIThread(new ToolStripMessage()
+                {
+                    Text = string.Format("Not Connected")
+                });
+            }
+        }
+
+        public void Close()
+        {
+            serialPort.Close();
         }
     }
 }

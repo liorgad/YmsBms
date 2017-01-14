@@ -23,6 +23,8 @@ namespace YtsLogic
         System.Timers.Timer samplingTimer;
         EventQueue<string> incommingQueue;
 
+        
+
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
         public MainLogic()
         {
@@ -60,31 +62,14 @@ namespace YtsLogic
 
                     //if (serialPort.IsOpen)
                     if (commPort.IsOpen)
-                    {
-
-                        evAgg.PublishOnUIThread(new ToolStripMessage()
-                        {
-                            //    Text = string.Format("Connected : {0} {1} {2}", serialPort.PortName,
-                            //serialPort.BaudRate, serialPort.Parity)
-                            Text = string.Format("Connected : {0}", portName)
-                        });
-
+                    { 
                         evAgg.PublishOnUIThread(new PortConnected());
 
-                        //samplingTimer = new System.Timers.Timer(Configuration.Default.SamplingTimerIntervalMilisec);
-                        //samplingTimer.Elapsed += SamplingTimer_Elapsed;
-                        //samplingTimer.Enabled = true;
-                        //samplingTimer.Start();
-                    }
-                    else
-                    {
-                        //toolStripLabel1.Text = string.Format("Not Connected");
-
-                        evAgg.PublishOnUIThread(new ToolStripMessage()
-                        {
-                            Text = string.Format("Not Connected")
-                        });
-                    }
+                        samplingTimer = new System.Timers.Timer(Configuration.Default.SamplingTimerIntervalMilisec);
+                        samplingTimer.Elapsed += SamplingTimer_Elapsed;
+                        samplingTimer.Enabled = true;
+                        samplingTimer.Start();
+                    }                    
                 }
                 else
                 {
@@ -180,64 +165,73 @@ namespace YtsLogic
             }
         }
 
-        
-
-        //private void SamplingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        foreach (var item in SharedData.Default.BatteryPackContainer)
-        //        {
-        //            if (item.Key == "cluster")
-        //            {
-        //                continue;
-        //            }
-
-        //            FrameFormat realTimeCmd = new FrameFormat()
-        //            {
-        //                SOI = ':',
-        //                Address = Convert.ToByte(item.Key),
-        //                Cmd = 2,
-        //                Version = 82,
-        //                EOI = '~'
-        //            };
-
-        //            if (serialPort.IsOpen)
-        //            {
-        //                //ring data = ":000252000EFE~";
-
-        //                string data = realTimeCmd.AsString;
-        //                // Create two different encodings.
-        //                Encoding ascii = Encoding.ASCII;
-        //                Encoding unicode = Encoding.Unicode;
-
-        //                // Convert the string into a byte array.
-        //                byte[] unicodeBytes = unicode.GetBytes(data);
-
-        //                // Perform the conversion from one encoding to the other.
-        //                byte[] asciiBytes = Encoding.Convert(unicode, ascii, unicodeBytes);
-
-        //                // Convert the new byte[] into a char[] and then into a string.
-        //                char[] asciiChars = new char[ascii.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
-        //                ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
-        //                string asciiString = new string(asciiChars);
-
-        //                Debug.WriteLine("Sending " + asciiString);
-        //                logger.Trace("Sending {0}", asciiString);
-
-        //                serialPort.Write(asciiChars, 0, asciiChars.Length);
-
-        //                Thread.Sleep(Configuration.Default.WaitTimePeriodBetweenCommandSendMilliSec);
-        //            }
 
 
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Error(ex, "Error sending message to pack");
-        //    }
-        //}
+        private async void SamplingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                foreach (var item in SharedData.Default.BatteryPackContainer)
+                {
+                    if (item.Key == "cluster")
+                    {
+                        continue;
+                    }
+
+                    FrameFormat realTimeCmd = new FrameFormat()
+                    {
+                        SOI = ':',
+                        Address = Convert.ToByte(item.Key),
+                        Cmd = 2,
+                        Version = 82,
+                        EOI = '~'
+                    };
+
+                    if (commPort.IsOpen)
+                    {
+                        //ring data = ":000252000EFE~";
+
+                        await SendCommand(realTimeCmd);
+
+                    }
+                    Thread.Sleep(Configuration.Default.WaitTimePeriodBetweenCommandSendMilliSec);
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error sending message to pack");
+            }
+        }
+
+        private async Task SendCommand(FrameFormat realTimeCmd)
+        {
+            string data = realTimeCmd.AsString;
+            // Create two different encodings.
+            Encoding ascii = Encoding.ASCII;
+            Encoding unicode = Encoding.Unicode;
+
+            // Convert the string into a byte array.
+            byte[] unicodeBytes = unicode.GetBytes(data);
+
+            // Perform the conversion from one encoding to the other.
+            byte[] asciiBytes = Encoding.Convert(unicode, ascii, unicodeBytes);
+
+            // Convert the new byte[] into a char[] and then into a string.
+            char[] asciiChars = new char[ascii.GetCharCount(asciiBytes, 0, asciiBytes.Length)];
+            ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
+            string asciiString = new string(asciiChars);
+
+            Debug.WriteLine("Sending " + asciiString);
+            logger.Trace("Sending {0}", asciiString);
+
+            //serialPort.Write(asciiChars, 0, asciiChars.Length);
+
+            var response = await commPort.SendReceive(asciiString);
+
+            incommingQueue.Add(response);
+        }
 
         private void ParseCommand(FrameFormat frame)
         {
@@ -366,11 +360,11 @@ namespace YtsLogic
                 samplingTimer.Dispose();
             }
 
-            //if (serialPort != null)
-            //{
-            //    serialPort.Close();
-            //    serialPort.Dispose();
-            //}
+            if (commPort != null)
+            {
+                commPort.Close();
+                commPort.Dispose();
+            }
         }
 
         public bool RemoveBattery(string name)
@@ -392,6 +386,25 @@ namespace YtsLogic
             }
 
             return true;
+        }
+
+        public void AddBattery(BatteryStatViewModel viewModel)
+        {
+            // sending the first command that never responds
+            FrameFormat realTimeCmd = new FrameFormat()
+            {
+                SOI = ':',
+                Address = Convert.ToByte(viewModel.Address),
+                Cmd = 2,
+                Version = 82,
+                EOI = '~'
+            };
+            commPort.SendWrite(realTimeCmd.AsString);
+
+
+            SharedData.Default.BatteryPackContainer.TryAdd(
+                viewModel.Address,
+                viewModel);
         }
     }
 }
