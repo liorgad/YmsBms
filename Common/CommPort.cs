@@ -31,7 +31,7 @@ namespace Common
             Configuration.Default.Load();
         }      
 
-        public string SendReceive(string data)
+        public async Task<string> SendReceive(string data)
         {
 
             SendWrite(data);
@@ -43,7 +43,7 @@ namespace Common
                 //await strm.WriteAsync(bytes, 0, bytes.Length);
                 byte[] buffer = new byte[1024];
                 Thread.Sleep(50);
-                var bytesRead = serialPort.BaseStream.Read(buffer, 0, buffer.Length);
+                var bytesRead = await serialPort.BaseStream.ReadAsync(buffer, 0, buffer.Length);
                 byte[] resultBuffer = new byte[bytesRead];
                 Buffer.BlockCopy(buffer, 0, resultBuffer, 0, bytesRead);
                 return Encoding.ASCII.GetString(resultBuffer);

@@ -13,7 +13,7 @@ namespace Common
     {
         public IEnumerable<BatteryStatViewModel> SeriesBatteriesAddresses { get; set; }
 
-        Dictionary<string, PropertyInfo> properyInfoMap;
+        //Dictionary<string, PropertyInfo> properyInfoMap;
         System.Threading.Timer updateTimer;
         public SeriesStatViewModel(SynchronizationContext syncCtx, string name, IEnumerable<BatteryStatViewModel> selectedBatteries) : base(syncCtx)
         {

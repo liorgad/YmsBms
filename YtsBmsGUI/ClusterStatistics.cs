@@ -23,7 +23,7 @@ namespace YtsBmsGUI
             evAgg = EventAggregatorProvider.EventAggregator;
 
             clusterStatViewModelBindingSource.DataSource = clusterVM;
-            this.clusterVm = clusterVm;
+            this.clusterVm = clusterVM;
         }
         
         private void button_delete_Click(object sender, EventArgs e)
