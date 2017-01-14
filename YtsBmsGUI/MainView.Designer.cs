@@ -110,24 +110,25 @@
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.AutoScroll = true;
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(170, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(138, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(660, 551);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(692, 551);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 666F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.treeView1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(833, 557);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
@@ -137,7 +138,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(3, 3);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(161, 551);
+            this.treeView1.Size = new System.Drawing.Size(129, 551);
             this.treeView1.TabIndex = 2;
             // 
             // contextMenuStrip_treeView
@@ -146,7 +147,7 @@
             this.showToolStripMenuItem,
             this.removeToolStripMenuItem});
             this.contextMenuStrip_treeView.Name = "contextMenuStrip_treeView";
-            this.contextMenuStrip_treeView.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuStrip_treeView.Size = new System.Drawing.Size(118, 48);
             // 
             // showToolStripMenuItem
             // 
@@ -158,7 +159,7 @@
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 

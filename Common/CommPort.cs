@@ -27,9 +27,11 @@ namespace Common
         public CommPort()
         {
             evAgg = EventAggregatorProvider.EventAggregator;
+            serialPort = new SerialPort();
+            Configuration.Default.Load();
         }      
 
-        public async Task<string> SendReceive(string data)
+        public string SendReceive(string data)
         {
 
             SendWrite(data);
@@ -40,7 +42,8 @@ namespace Common
                 //Stream strm = serialPort.BaseStream;
                 //await strm.WriteAsync(bytes, 0, bytes.Length);
                 byte[] buffer = new byte[1024];
-                var bytesRead = await serialPort.BaseStream.ReadAsync(buffer, 0, buffer.Length);
+                Thread.Sleep(50);
+                var bytesRead = serialPort.BaseStream.Read(buffer, 0, buffer.Length);
                 byte[] resultBuffer = new byte[bytesRead];
                 Buffer.BlockCopy(buffer, 0, resultBuffer, 0, bytesRead);
                 return Encoding.ASCII.GetString(resultBuffer);

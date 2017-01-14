@@ -111,28 +111,39 @@ namespace ConsoleApplication1
 
             CommPort port = new CommPort();
             port.InitializePort("COM3");
-            port.Open();            
+            port.Open();
 
             FrameFormat test = new FrameFormat()
             {
                 SOI = ':',
                 Address = 4,
-                Cmd = (byte)Command.RealTimeData,                
-                Version = (byte)GenericParser.Version.Version82,                
+                Cmd = (byte)Command.RealTimeData,
+                Version = (byte)GenericParser.Version.Version82,
                 EOI = '~'
             };
 
             Console.WriteLine(test.AsString);
 
-            Console.ReadKey();
-
             if(port.IsOpen)
             {
-                var result = port.SendReceive(test.AsString).Result;
-
-                Console.WriteLine(result);
+                port.SendWrite(test.AsString);
+                Thread.Sleep(50);
             }
 
+            //nsole.ReadKey();
+            for (int i = 0; i <100; i++)
+            {
+                if (port.IsOpen)
+                {
+                    var sw = Stopwatch.StartNew();
+                    sw.Start();
+                    var result = port.SendReceive(test.AsString);
+                    sw.Stop();
+                    Console.WriteLine(sw.ElapsedMilliseconds + " " + result);
+                }
+                Thread.Sleep(250);
+            }
+            Console.ReadLine();
             return;
 
             RealtimeDataMap_V82 rtm1 = new RealtimeDataMap_V82()
