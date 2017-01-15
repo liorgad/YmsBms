@@ -114,12 +114,10 @@ namespace ConsoleApplication1
             port.Open();
 
             FrameFormat test = new FrameFormat()
-            {
-                SOI = ':',
+            {                
                 Address = 4,
                 Cmd = (byte)Command.RealTimeData,
-                Version = (byte)GenericParser.Version.Version82,
-                EOI = '~'
+                Version = (byte)GenericParser.Version.Version82                
             };
 
             Console.WriteLine(test.AsString);
@@ -167,14 +165,12 @@ namespace ConsoleApplication1
             var r = (string)GenericParser.GenericParser.Build<RealtimeDataMap_V82>(rtm1);
 
             FrameFormat b = new FrameFormat()
-            {
-                SOI = ':',
+            {                
                 Address = 4,
                 Cmd = (byte)Command.RealTimeData,
                 Data = r,
                 Version = (byte)GenericParser.Version.Version82,   
-                Length = 138,             
-                EOI = '~'
+                Length = 138  
             };
             
             var conf = Common.Configuration.Default;

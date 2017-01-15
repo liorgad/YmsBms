@@ -23,6 +23,8 @@ namespace YtsLogic
         System.Timers.Timer samplingTimer;
         EventQueue<string> incommingQueue;
 
+        StringBuilder buffer = new StringBuilder();
+
         
 
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -125,14 +127,22 @@ namespace YtsLogic
         {
             try
             {
-                FrameFormat frame = GenericParser.GenericParser.Parse<FrameFormat>(message);
+                string syncedMessage = SyncMessage(message);
+                
+                if(string.IsNullOrWhiteSpace(syncedMessage))
+                {
+                    logger.Info("no synced message ");
+                    return;
+                }
+
+                FrameFormat frame = GenericParser.GenericParser.Parse<FrameFormat>(syncedMessage);
 
                 if(null == frame)
                 {
                     return;
                 }
 
-                var subStr = message.TrimStart(new char[] { frame.SOI }).TrimEnd(new char[] { frame.EOI });
+                var subStr = syncedMessage.TrimStart(new char[] { FrameFormat.SOI }).TrimEnd(new char[] { FrameFormat.EOI });
 
                 subStr = subStr.Substring(0, subStr.Length - 2);
 
@@ -165,12 +175,51 @@ namespace YtsLogic
             }
         }
 
+        private string SyncMessage(string message)
+        {
+            int sIdx = message.IndexOf(FrameFormat.SOI);
+            int eIdx = message.IndexOf(FrameFormat.EOI);
+            string result;
 
+            if (sIdx < 0 && eIdx < 0)
+            {
+                buffer.Clear();
+                return string.Empty;
+            }
 
-        private async void SamplingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+            if(sIdx <0 && eIdx >=0)
+            {
+                buffer.Append(message.Substring(0, eIdx + 1));
+                result = buffer.ToString();
+                buffer.Clear();
+                return result;
+            }
+
+            if(eIdx < 0 && sIdx >=0)
+            {
+                buffer.Clear();
+                buffer.Append(message.Substring(sIdx));
+                return string.Empty;
+            }
+
+            if(eIdx < sIdx)
+            {
+                buffer.Append(message.Substring(0, eIdx + 1));
+                result = buffer.ToString();
+                buffer.Clear();
+                buffer.Append(message.Substring(sIdx));
+                return result;
+            }
+
+            buffer.Clear();
+            return message.Substring(sIdx, eIdx - sIdx +1);            
+        }
+
+        private void SamplingTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
             {
+               
                 foreach (var item in SharedData.Default.BatteryPackContainer)
                 {
                     if (item.Key == "cluster")
@@ -179,22 +228,20 @@ namespace YtsLogic
                     }
 
                     FrameFormat realTimeCmd = new FrameFormat()
-                    {
-                        SOI = ':',
+                    {                        
                         Address = Convert.ToByte(item.Key),
                         Cmd = 2,
-                        Version = 82,
-                        EOI = '~'
+                        Version = 82                        
                     };
 
                     if (commPort.IsOpen)
                     {
                         //ring data = ":000252000EFE~";
-
-                        await SendCommand(realTimeCmd);
+                        SendCommand(realTimeCmd);
+                        //Debug.WriteLine("time to send command = {0}", sw.ElapsedMilliseconds);                       
 
                     }
-                    Thread.Sleep(Configuration.Default.WaitTimePeriodBetweenCommandSendMilliSec);
+                    Thread.Sleep(100);// Configuration.Default.WaitTimePeriodBetweenCommandSendMilliSec);
 
 
                 }
@@ -205,7 +252,7 @@ namespace YtsLogic
             }
         }
 
-        private async Task SendCommand(FrameFormat realTimeCmd)
+        private void SendCommand(FrameFormat realTimeCmd)
         {
             string data = realTimeCmd.AsString;
             // Create two different encodings.
@@ -223,12 +270,15 @@ namespace YtsLogic
             ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
             string asciiString = new string(asciiChars);
 
-            Debug.WriteLine("Sending " + asciiString);
+            Debug.WriteLine("{0} Sending {1}",DateTime.Now,asciiString);
             logger.Trace("Sending {0}", asciiString);
 
             //serialPort.Write(asciiChars, 0, asciiChars.Length);
 
-            var response = await commPort.SendReceive(asciiString);
+            var response = commPort.SendReceive(asciiString);
+
+            Debug.WriteLine("{0} Received {1}",DateTime.Now,response);
+            logger.Trace("Received {0}", response);
 
             incommingQueue.Add(response);
         }
@@ -392,14 +442,12 @@ namespace YtsLogic
         {
             // sending the first command that never responds
             FrameFormat realTimeCmd = new FrameFormat()
-            {
-                SOI = ':',
+            {                
                 Address = Convert.ToByte(viewModel.Address),
                 Cmd = 2,
-                Version = 82,
-                EOI = '~'
+                Version = 82               
             };
-            commPort.SendWrite(realTimeCmd.AsString);
+            //commPort.SendWrite(realTimeCmd.AsString);
 
 
             SharedData.Default.BatteryPackContainer.TryAdd(

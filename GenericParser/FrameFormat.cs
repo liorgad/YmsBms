@@ -30,7 +30,7 @@ namespace GenericParser
     public class FrameFormat
     {       
         [ParserDefinition(0, 1)]
-        public char SOI { get; set; }
+        public static char SOI { get; set; }
 
         [ParserDefinition(1, 2)]
         public byte Address { get; set; }
@@ -52,7 +52,7 @@ namespace GenericParser
         public byte CRC { get; set; }
 
         [ParserDefinition(7, 1)]
-        public char EOI { get; set; }
+        public static char EOI { get; set; }
 
         public string AsString { get { return ToString(); } }
 
@@ -91,6 +91,12 @@ namespace GenericParser
             }
 
             return (sum ^= 0xFF).ToString("X2");
+        }
+
+        static FrameFormat()
+        {
+            SOI = ':';
+            EOI = '~';               
         }
 
         public FrameFormat()

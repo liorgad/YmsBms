@@ -31,7 +31,7 @@ namespace Common
             Configuration.Default.Load();
         }      
 
-        public async Task<string> SendReceive(string data)
+        public string SendReceive(string data)
         {
 
             SendWrite(data);
@@ -43,7 +43,7 @@ namespace Common
                 //await strm.WriteAsync(bytes, 0, bytes.Length);
                 byte[] buffer = new byte[1024];
                 Thread.Sleep(50);
-                var bytesRead = await serialPort.BaseStream.ReadAsync(buffer, 0, buffer.Length);
+                var bytesRead = serialPort.BaseStream.Read(buffer, 0, buffer.Length);
                 byte[] resultBuffer = new byte[bytesRead];
                 Buffer.BlockCopy(buffer, 0, resultBuffer, 0, bytesRead);
                 return Encoding.ASCII.GetString(resultBuffer);
@@ -52,15 +52,16 @@ namespace Common
             return null;
         }
 
-        public async void SendWrite(string data)
+        public void SendWrite(string data)
         {
             locker.EnterWriteLock();
             var bytes = Encoding.ASCII.GetBytes(data);
             if (serialPort.IsOpen)
             {
                 Stream strm = serialPort.BaseStream;
-                await strm.WriteAsync(bytes, 0, bytes.Length);
+                strm.Write(bytes, 0, bytes.Length);
             }
+            Thread.Sleep(200);
             locker.ExitWriteLock();
         }
 
@@ -76,11 +77,11 @@ namespace Common
                 serialPort.PortName = portName;
                 serialPort.BaudRate = Configuration.Default.BaudRate;
                 serialPort.Parity = Configuration.Default.ParityType;
-                serialPort.DataBits = Configuration.Default.DataBits;
-                serialPort.StopBits = Configuration.Default.StopBitsType;
-                serialPort.Handshake = Configuration.Default.HandShakeType;
-                serialPort.ReadTimeout = Configuration.Default.ReadTimeout;
-                serialPort.WriteTimeout = Configuration.Default.WriteTimeout;
+                //serialPort.DataBits = Configuration.Default.DataBits;
+                //serialPort.StopBits = Configuration.Default.StopBitsType;
+                //serialPort.Handshake = Configuration.Default.HandShakeType;
+                //serialPort.ReadTimeout = Configuration.Default.ReadTimeout;
+                //serialPort.WriteTimeout = Configuration.Default.WriteTimeout;
             }
         }
 
