@@ -46,6 +46,7 @@ namespace Common
                 var bytesRead = serialPort.BaseStream.Read(buffer, 0, buffer.Length);
                 byte[] resultBuffer = new byte[bytesRead];
                 Buffer.BlockCopy(buffer, 0, resultBuffer, 0, bytesRead);
+                serialPort.BaseStream.Flush();
                 return Encoding.ASCII.GetString(resultBuffer);
             }
 
