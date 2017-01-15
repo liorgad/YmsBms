@@ -11,15 +11,16 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using YtsLogic;
 
 namespace ConsoleApplication1
 {
     class Program
     {
         string data = ":000264000EFE~";
-        public static string realTimeData =         @":0182520078000000000000001E3F040F2A0F050F3A0F1500000000023E3F00000000000000800F00000000000000000000000000054100410064F7~";
-        public static string configurationData =    @":01815200EA010F0000A0006D0CE4025A230FA0001E10040CE4781E60AE5F285F28692806400DAC03E80384109A006410040AF000640CE47B0C00C8781E57E401F460AE5F5A282B6E6414196E641419786E000F064000640BB800030DAC00640BB800031194000A0BB800030103E8000300232DF2~";
-        public static string confData2 =            @":01815200EA010400006400110CE4025A230F3C001E10040BB8213417705F285F28692813880DAC03E803841068006410040A28000A0BB8213400C8200815E001F417705F5A282B6E6414196E641419786E000F01F400640BB8000307D000640BB8000309C4000A0BB800030003E8000300232DBD~";
+        public static string realTimeData = @":0182520078000000000000001E3F040F2A0F050F3A0F1500000000023E3F00000000000000800F00000000000000000000000000054100410064F7~";
+        public static string configurationData = @":01815200EA010F0000A0006D0CE4025A230FA0001E10040CE4781E60AE5F285F28692806400DAC03E80384109A006410040AF000640CE47B0C00C8781E57E401F460AE5F5A282B6E6414196E641419786E000F064000640BB800030DAC00640BB800031194000A0BB800030103E8000300232DF2~";
+        public static string confData2 = @":01815200EA010400006400110CE4025A230F3C001E10040BB8213417705F285F28692813880DAC03E803841068006410040A28000A0BB8213400C8200815E001F417705F5A282B6E6414196E641419786E000F01F400640BB8000307D000640BB8000309C4000A0BB800030003E8000300232DBD~";
         public static string realTimeData82_3 = @":038252007E000000000000001E86040F520F260F5A0F3B00000000053C3C3D3D3C00000000000000000F00000000000000000000000000014601EA02BC51~";
 
         public static string realTimeData82_4 = @":038252007E000000000000001DA7040EC90EC30EEE0ED500000000053D3E3E3D3D00000000000000000F00000000000000000000000000014601A402BC1D~";
@@ -29,6 +30,21 @@ namespace ConsoleApplication1
         //Address=5 Voltage=25.028 Current=0 Temp=22 SOC=32 DFET=True CFET=True Protection= ChargeState=0 TempState=0 VoltState=0
         static void Main(string[] args)
         {
+            #region
+            string first = "008A0000000000000030E7070DF80DF90DF90DF90DF90DF90DF900000000053D3D3C3D3D00000000000000000F00000000000000000000000000000F00D202BC39~:04825200840000000000000030DD070DF60DF60";
+            string sec = "DF60DF60DF60DF60DF600000000023E3E00000000000000000F00000000000000000000000000001E00EA030CC2~:0A82520084000000000000003";
+            string third = "0F1070DFB0DFB0DFA0DFB0DFE0DFD0DFD00000000023E3D00000000000000000F00000000000000000000000000001E00EA030C6D~:098252008A0000000000000030D8070DF50DF3";
+
+            MainLogic logic = new MainLogic();
+            logic.HandleParsing(first);
+            logic.HandleParsing(sec);
+            logic.HandleParsing(third);
+
+
+
+            return;
+            #endregion
+
             #region
             //Configuration conf = new Configuration()
             //{
@@ -109,6 +125,7 @@ namespace ConsoleApplication1
 
             #endregion
 
+            #region
             CommPort port = new CommPort();
             port.InitializePort("COM3");
             port.Open();
@@ -122,14 +139,14 @@ namespace ConsoleApplication1
 
             Console.WriteLine(test.AsString);
 
-            if(port.IsOpen)
+            if (port.IsOpen)
             {
                 port.SendWrite(test.AsString);
                 Thread.Sleep(50);
             }
 
             //nsole.ReadKey();
-            for (int i = 0; i <100; i++)
+            for (int i = 0; i < 100; i++)
             {
                 if (port.IsOpen)
                 {
@@ -143,6 +160,9 @@ namespace ConsoleApplication1
             }
             Console.ReadLine();
             return;
+            #endregion
+
+            #region
 
             RealtimeDataMap_V82 rtm1 = new RealtimeDataMap_V82()
             {
@@ -169,10 +189,10 @@ namespace ConsoleApplication1
                 Address = 4,
                 Cmd = (byte)Command.RealTimeData,
                 Data = r,
-                Version = (byte)GenericParser.Version.Version82,   
-                Length = 138  
+                Version = (byte)GenericParser.Version.Version82,
+                Length = 138               
             };
-            
+
             var conf = Common.Configuration.Default;
 
             conf.Load();
@@ -224,6 +244,7 @@ namespace ConsoleApplication1
 
             Console.ReadLine();
             return;
+            #endregion
             //FrameFormat b = new FrameFormat()
             //{
             //    SOI = ':',
@@ -249,7 +270,7 @@ namespace ConsoleApplication1
             //ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
             //string asciiString = new string(asciiChars);
 
-           
+
 
 
             //using (SerialPort port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One))
@@ -261,7 +282,7 @@ namespace ConsoleApplication1
 
             //        port.DataReceived += (sender, e) =>
             //        {
-                       
+
             //            var data = port.ReadTo("~");
             //            data += "~";
 
@@ -284,7 +305,7 @@ namespace ConsoleApplication1
 
             //    Console.ReadKey();
             //}
-            
+
         }
 
         private static void Port_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -301,68 +322,68 @@ namespace ConsoleApplication1
             BatteryStatViewModel vm = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current);
             //if (SharedData.Default.BatteryPackContainer.TryGetValue(frame.Address.ToString(), out vm))
             //{
-                if (realTimeData.Current[1] != 0 && realTimeData.Current[0] != 0)
-                {
-                    vm.Current = 0;
-                }
-                else
-                {
-                    vm.Current = realTimeData.Current[0] == 0 ? (realTimeData.Current[1]*(-1)) : realTimeData.Current[0];
-                }
+            if (realTimeData.Current[1] != 0 && realTimeData.Current[0] != 0)
+            {
+                vm.Current = 0;
+            }
+            else
+            {
+                vm.Current = realTimeData.Current[0] == 0 ? (realTimeData.Current[1] * (-1)) : realTimeData.Current[0];
+            }
 
-                vm.SOC = realTimeData.SOC;
-                vm.Temperature = realTimeData.Temp.Max();
-                vm.Voltage = realTimeData.Vbat;
-                vm.CFET = (realTimeData.FETState & (byte)FETSTATE.CFET) == (byte)FETSTATE.CFET;
-                vm.DFET = (realTimeData.FETState & (byte)FETSTATE.DFET) == (byte)FETSTATE.DFET;
-                vm.ChargeState = realTimeData.CState;
-                vm.TemperatureState = realTimeData.TState;
-                vm.VoltageState = realTimeData.VState;
+            vm.SOC = realTimeData.SOC;
+            vm.Temperature = realTimeData.Temp.Max();
+            vm.Voltage = realTimeData.Vbat;
+            vm.CFET = (realTimeData.FETState & (byte)FETSTATE.CFET) == (byte)FETSTATE.CFET;
+            vm.DFET = (realTimeData.FETState & (byte)FETSTATE.DFET) == (byte)FETSTATE.DFET;
+            vm.ChargeState = realTimeData.CState;
+            vm.TemperatureState = realTimeData.TState;
+            vm.VoltageState = realTimeData.VState;
 
-                if (vm.VoltageState == 0)
-                {
-                    vm.Protection = string.Empty;
-                    //vm.ProtectionBackColor = Color.Transparent;
-                }
-                else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
-                {
-                    vm.Protection = "Single cell undervoltage";
-                    //vm.ProtectionBackColor = Color.Red;
-                }
-                else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
-                {
-                    vm.Protection = "Battery pack undervoltage ";
-                    //vm.ProtectionBackColor = Color.Red;
-                }
-                else
-                {
-                    vm.Protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
-                    //vm.ProtectionBackColor = Color.Orange;
-                }
+            if (vm.VoltageState == 0)
+            {
+                vm.Protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
+            }
+            else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
+            {
+                vm.Protection = "Single cell undervoltage";
+                //vm.ProtectionBackColor = Color.Red;
+            }
+            else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
+            {
+                vm.Protection = "Battery pack undervoltage ";
+                //vm.ProtectionBackColor = Color.Red;
+            }
+            else
+            {
+                vm.Protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
+                //vm.ProtectionBackColor = Color.Orange;
+            }
 
-                if (vm.ChargeState == 0)
-                {
-                    vm.Protection = string.Empty;
-                    //vm.ProtectionBackColor = Color.Transparent;
-                }
-                else
-                {
-                    vm.Protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
-                    //vm.ProtectionBackColor = Color.Orange;
-                }
+            if (vm.ChargeState == 0)
+            {
+                vm.Protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
+            }
+            else
+            {
+                vm.Protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
+                //vm.ProtectionBackColor = Color.Orange;
+            }
 
-                if (vm.TemperatureState == 0)
-                {
-                    vm.Protection = string.Empty;
-                    //vm.ProtectionBackColor = Color.Transparent;
-                }
-                else
-                {
-                    vm.Protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
-                    //vm.ProtectionBackColor = Color.Orange;
-                }
+            if (vm.TemperatureState == 0)
+            {
+                vm.Protection = string.Empty;
+                //vm.ProtectionBackColor = Color.Transparent;
+            }
+            else
+            {
+                vm.Protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
+                //vm.ProtectionBackColor = Color.Orange;
+            }
 
-                Debug.WriteLine(vm.ToString());                
+            Debug.WriteLine(vm.ToString());
             //}
 
             return vm;

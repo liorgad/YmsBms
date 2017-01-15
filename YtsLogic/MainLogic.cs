@@ -123,7 +123,7 @@ namespace YtsLogic
         //    }
         //}
 
-        private void HandleParsing(string message)
+        public void HandleParsing(string message)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace YtsLogic
         {
             int sIdx = message.IndexOf(FrameFormat.SOI);
             int eIdx = message.IndexOf(FrameFormat.EOI);
-            string result;
+            string result = string.Empty;
 
             if (sIdx < 0 && eIdx < 0)
             {
@@ -204,8 +204,12 @@ namespace YtsLogic
 
             if(eIdx < sIdx)
             {
-                buffer.Append(message.Substring(0, eIdx + 1));
-                result = buffer.ToString();
+                if(buffer.Length > 0)
+                {
+                    buffer.Append(message.Substring(0, eIdx + 1));
+                    result = buffer.ToString();
+                }               
+                
                 buffer.Clear();
                 buffer.Append(message.Substring(sIdx));
                 return result;

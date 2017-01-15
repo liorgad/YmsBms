@@ -60,6 +60,10 @@
       <Project>{fe14e242-1c9b-45f4-8a83-323b14920477}</Project>
       <Name>GenericParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\YtsLogic\YtsLogic.csproj">
+      <Project>{CC636445-7C3B-456C-8C8A-D510A568205C}</Project>
+      <Name>YtsLogic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
