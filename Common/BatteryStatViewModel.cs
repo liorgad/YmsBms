@@ -25,6 +25,7 @@ namespace Common
         private ushort temperatureState;
         private ushort voltageState;
         private Color protectionBackColor = Color.Transparent;
+        private Color workStateForColor = Color.Transparent;
 
 
         public SynchronizationContext SyncCtx { get; set; }
@@ -53,6 +54,22 @@ namespace Common
                 if (value != this.protectionBackColor)
                 {
                     this.protectionBackColor = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual Color WorkStateForColor
+        {
+            get
+            {
+                return this.workStateForColor;
+            }
+            set
+            {
+                if (value != this.workStateForColor)
+                {
+                    this.workStateForColor = value;
                     NotifyPropertyChanged();
                 }
             }

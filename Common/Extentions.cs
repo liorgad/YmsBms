@@ -28,6 +28,19 @@ namespace Common
             return en.ToString();
         }
 
+        public static object ToEnumDefaultValue(this Enum en)
+        {
+            Type type = en.GetType();
+            MemberInfo[] memInfo = type.GetMember(en.ToString());
+            if (memInfo != null && memInfo.Length > 0)
+            {
+                object[] attrs = memInfo[0].GetCustomAttributes(typeof(DefaultValueAttribute), false);
+                if (attrs != null && attrs.Length > 0)
+                    return ((DefaultValueAttribute)attrs[0]).Value;
+            }
+            return null;
+        }
+
         public static string ToStringWithAtt<T>(this object obj)
         {
             Type objType = obj.GetType();

@@ -354,27 +354,33 @@ namespace YtsLogic
 
             string protection = string.Empty;
             Color backColor = Color.Transparent;
+            Color foreColor = Color.Transparent;
 
             if (vm.VoltageState == 0)
             {
                 //vm.Protection = string.Empty;
                 //vm.ProtectionBackColor = Color.Transparent;
             }
-            else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
-            {
-                protection = "Single cell undervoltage";
-                backColor = Color.Yellow;
-            }
-            else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
-            {
-                protection = "Battery pack undervoltage ";
-                backColor = Color.Yellow;
-            }
             else
             {
                 protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
-                backColor = Color.Orange;
+                foreColor = (System.Drawing.Color)((VSTATE)vm.VoltageState).ToEnumDefaultValue();
             }
+            //else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
+            //{
+            //    protection = "Single cell undervoltage";
+            //    backColor = Color.Yellow;
+            //}
+            //else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
+            //{
+            //    protection = "Battery pack undervoltage ";
+            //    backColor = Color.Yellow;
+            //}
+            //else
+            //{
+            //    protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
+            //    backColor = Color.Orange;
+            //}
 
             if (vm.ChargeState == 0)
             {
@@ -384,7 +390,8 @@ namespace YtsLogic
             else
             {
                 protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
-                backColor = Color.Orange;
+                //backColor = Color.Orange;
+                foreColor = (System.Drawing.Color)((CSTATE)vm.VoltageState).ToEnumDefaultValue();
             }
 
             if (vm.TemperatureState == 0)
@@ -395,7 +402,8 @@ namespace YtsLogic
             else
             {
                 protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
-                backColor = Color.Orange;
+                //backColor = Color.Orange;
+                foreColor = (System.Drawing.Color)((TSTATE)vm.VoltageState).ToEnumDefaultValue();
             }
 
             vm.Protection = protection;

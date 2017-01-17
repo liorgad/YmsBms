@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,12 +34,16 @@ namespace GenericParser
     public enum VSTATE : ushort
     {
         [Description("single cell overvoltage")]
+        [DefaultValue(typeof(Color),"Red")]
         VOV =1,//uint16_t VOV:1; //single cell overvoltage
         [Description("single cell undervoltage")]
+        [DefaultValue(typeof(Color), "Orange")]
         VUV = 2,//uint16_t VUV:1; //single cell undervoltage
         [Description("battery pack overvoltage")]
+        [DefaultValue(typeof(Color), "Red")]
         BVOV = 4,//uint16_t BVOV:1//battery pack overvoltage
         [Description("battery pack undervoltage")]
+        [DefaultValue(typeof(Color), "Orange")]
         BVUV =8,//uint16_t BVUV:1; //battery pack undervoltage
         [Description("single cell overvoltage warning value")]
         wVOV =16,//uint16_t wVOV:1; //single cell overvoltage warning value
@@ -49,25 +54,34 @@ namespace GenericParser
         [Description("battery pack undervoltage warning value")]
         wBVUV =128,//uint16_t wBVUV:1; //battery pack undervoltage warning value
         [Description("dropout voltage protection")]
+        [DefaultValue(typeof(Color), "Red")]
         VDIFF =256,//uint16_t VDIFF:1; //dropout voltage protection
         [Description("disconnection")]
+        [DefaultValue(typeof(Color), "Red")]
         VBREAK =512,//uint16_t VBREAK:1; //disconnection
         [Description("low voltage，prohibit charging")]
+        [DefaultValue(typeof(Color), "Red")]
         CSGDIS =1024//uint16_t CSGDIS:1; //low voltage，prohibit charging
     };
     public enum CSTATE
     {
         [Description("charge status")]
+        [DefaultValue(typeof(Color), "Green")]
         CING =1,//uint16_t CING:1; //charge status
         [Description("discharge status")]
+        [DefaultValue(typeof(Color), "Green")]
         DING = 2,//uint16_t DING:1; //discharge status
         [Description("over-current charge")]
+        [DefaultValue(typeof(Color), "Red")]
         OCCSG = 4,//uint16_t OCCSG:1; //over-current charge
         [Description("short-circuit protection")]
+        [DefaultValue(typeof(Color), "Red")]
         SHORT = 8,//uint16_t SHORT:1; //short-circuit protection
         [Description("over-current discharge first-grade")]
+        [DefaultValue(typeof(Color), "Red")]
         OCDSG1 = 16,//uint16_t OCDSG1:1; //over-current discharge first-grade
         [Description("over-current discharge second-class")]
+        [DefaultValue(typeof(Color), "Red")]
         OCDSG2 = 32,//uint16_t OCDSG2:1;//over-current discharge second-class
         [Description("charge current warning value")]
         wOCCSG = 64,//uint16_t wOCCSG:1; //charge current warning value
@@ -78,20 +92,28 @@ namespace GenericParser
     public enum TSTATE : ushort
     {
         [Description("charge high temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TCELL_CSGH = 1,//uint16_t TCELL_CSGH:1; //charge high temperature
         [Description("charge low temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TCELL_CSGL = 2,//uint16_t TCELL_CSGL:1; //charge low temperature
         [Description("discharge high temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TCELL_DSGH = 4,//uint16_t TCELL_DSGH:1; //discharge high temperature
         [Description("discharge low temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TCELL_DSGL = 8,//uint16_t TCELL_DSGL:1; //discharge low temperature
         [Description("environment high temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TENV_H = 16,//uint16_t TENV_H:1; //environment high temperature
         [Description("environment low temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TENV_L = 32,//uint16_t TENV_L:1; //environment low temperature
         [Description("power high temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TFET_H = 64,//uint16_t TFET_H:1; //power high temperature
         [Description("power low temperature")]
+        [DefaultValue(typeof(Color), "Red")]
         TFET_L = 128,//uint16_t TFET_L:1; //power low temperature
         [Description("battery cell high temperature warning")]
         wTCELL_H = 256,//uint16_t wTCELL_H:1; //battery cell high temperature warning
