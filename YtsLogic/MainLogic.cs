@@ -354,60 +354,40 @@ namespace YtsLogic
 
             string protection = string.Empty;
             Color backColor = Color.Transparent;
-            Color foreColor = Color.Transparent;
+            Color foreColor = Color.Black;
 
             if (vm.VoltageState == 0)
             {
-                //vm.Protection = string.Empty;
-                //vm.ProtectionBackColor = Color.Transparent;
+                vm.VoltageStateTxt = string.Empty;
+                vm.VoltageForeColor = Color.Black;
             }
             else
             {
-                protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
-                foreColor = (System.Drawing.Color)((VSTATE)vm.VoltageState).ToEnumDefaultValue();
-            }
-            //else if ((vm.VoltageState & (ushort)VSTATE.VUV) == (ushort)VSTATE.VUV)
-            //{
-            //    protection = "Single cell undervoltage";
-            //    backColor = Color.Yellow;
-            //}
-            //else if ((vm.VoltageState & (ushort)VSTATE.BVUV) == (ushort)VSTATE.BVUV)
-            //{
-            //    protection = "Battery pack undervoltage ";
-            //    backColor = Color.Yellow;
-            //}
-            //else
-            //{
-            //    protection = ((VSTATE)vm.VoltageState).ToEnumDescription();
-            //    backColor = Color.Orange;
-            //}
+                vm.VoltageStateTxt = ((VSTATE)vm.VoltageState).ToEnumDescription();
+                vm.VoltageForeColor = (System.Drawing.Color)((VSTATE)vm.VoltageState).ToEnumDefaultValue();
+            }            
 
             if (vm.ChargeState == 0)
             {
-                //vm.Protection = string.Empty;
-                //vm.ProtectionBackColor = Color.Transparent;
+                vm.CurrentStateTxt = string.Empty;
+                vm.CurrentForeColor = Color.Black;
             }
             else
             {
-                protection = ((CSTATE)vm.ChargeState).ToEnumDescription();
-                //backColor = Color.Orange;
-                foreColor = (System.Drawing.Color)((CSTATE)vm.VoltageState).ToEnumDefaultValue();
+                vm.CurrentStateTxt = ((CSTATE)vm.ChargeState).ToEnumDescription();
+                vm.CurrentForeColor = (System.Drawing.Color)((CSTATE)vm.VoltageState).ToEnumDefaultValue();
             }
 
             if (vm.TemperatureState == 0)
             {
-                //protection = string.Empty;
-                //vm.ProtectionBackColor = Color.Transparent;
+                vm.TemperatureStateTxt = string.Empty;
+                vm.TemperatureForeColor = Color.Black;
             }
             else
             {
-                protection = ((TSTATE)vm.TemperatureState).ToEnumDescription();
-                //backColor = Color.Orange;
-                foreColor = (System.Drawing.Color)((TSTATE)vm.VoltageState).ToEnumDefaultValue();
+                vm.TemperatureStateTxt = ((TSTATE)vm.TemperatureState).ToEnumDescription();
+                vm.TemperatureForeColor = (System.Drawing.Color)((TSTATE)vm.VoltageState).ToEnumDefaultValue();
             }
-
-            vm.Protection = protection;
-            vm.ProtectionBackColor = backColor;
 
             Debug.WriteLine(vm.ToString());
             logger.Trace(vm.ToStringAllProperties());

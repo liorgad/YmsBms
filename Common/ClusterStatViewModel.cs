@@ -53,23 +53,24 @@ namespace Common
             else
             {
 
-                var protecList = SeriesVm.Where(bvm => (bvm.ChargeState != 0) || (bvm.VoltageState != 0) || (bvm.TemperatureState != 0));
+                var protecList = SeriesVm.Where(bvm => 
+                ((bvm.ChargeState != 0) && (bvm.CurrentForeColor == System.Drawing.Color.Red)) ||
+                ((bvm.VoltageState != 0) && (bvm.VoltageForeColor == System.Drawing.Color.Red)) ||
+                ((bvm.TemperatureState != 0) && (bvm.TemperatureForeColor == System.Drawing.Color.Red)));
 
                 if (protecList.Count() > 0)
                 {
-                    Protection = protecList.Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
-                       Aggregate((a, b) => string.Format("{0}{1}{2}", a, Environment.NewLine, b));
+                    var needToCheck = protecList.Select(bvm => bvm.Address).
+                       Aggregate((a, b) => string.Format("{0},{1}", a,b));
+                    Protection = string.Format("Check batteries :{0}",needToCheck);
 
-                    ProtectionBackColor = System.Drawing.Color.Orange;
+                    ProtectionBackColor = System.Drawing.Color.Red;
                 }
                 else
                 {
-                     ProtectionBackColor =  System.Drawing.Color.Transparent;
+                    ProtectionBackColor =  System.Drawing.Color.Transparent;
+                    Protection = string.Empty;
                 }
-
-                //Protection = SeriesVm.Where(bvm => bvm.Protection != string.Empty).Select(bvm => string.Format("{0}: {1}", bvm.Address, bvm.Protection)).
-                //    Aggregate((a, b) => string.Format("{0}{1}{2}",a,Environment.NewLine,b));
-                
             }
         }
 

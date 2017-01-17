@@ -25,8 +25,12 @@ namespace Common
         private ushort temperatureState;
         private ushort voltageState;
         private Color protectionBackColor = Color.Transparent;
-        private Color workStateForColor = Color.Transparent;
-
+        private Color voltageForeColor = Color.Black;
+        private Color currentForeColor = Color.Black;
+        private Color temperatureForeColor = Color.Black;
+        private string voltageStateTxt;
+        private string currentStateTxt;
+        private string tempStateTxt;
 
         public SynchronizationContext SyncCtx { get; set; }
 
@@ -59,17 +63,49 @@ namespace Common
             }
         }
 
-        public virtual Color WorkStateForColor
+        public virtual Color VoltageForeColor
         {
             get
             {
-                return this.workStateForColor;
+                return this.voltageForeColor;
             }
             set
             {
-                if (value != this.workStateForColor)
+                if (value != this.voltageForeColor)
                 {
-                    this.workStateForColor = value;
+                    this.voltageForeColor = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual Color CurrentForeColor
+        {
+            get
+            {
+                return this.currentForeColor;
+            }
+            set
+            {
+                if (value != this.currentForeColor)
+                {
+                    this.currentForeColor = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual Color TemperatureForeColor
+        {
+            get
+            {
+                return this.temperatureForeColor;
+            }
+            set
+            {
+                if (value != this.temperatureForeColor)
+                {
+                    this.temperatureForeColor = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -235,6 +271,54 @@ namespace Common
                     this.protection = value;
                     NotifyPropertyChanged();
                     NotifyPropertyChanged("ProtectionBackColor");
+                }
+            }
+        }
+
+        public virtual string VoltageStateTxt
+        {
+            get
+            {
+                return this.voltageStateTxt;
+            }
+            set
+            {
+                if (value != this.voltageStateTxt)
+                {
+                    this.voltageStateTxt = value;
+                    NotifyPropertyChanged();                    
+                }
+            }
+        }
+
+        public virtual string CurrentStateTxt
+        {
+            get
+            {
+                return this.currentStateTxt;
+            }
+            set
+            {
+                if (value != this.currentStateTxt)
+                {
+                    this.currentStateTxt = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public virtual string TemperatureStateTxt
+        {
+            get
+            {
+                return this.tempStateTxt;
+            }
+            set
+            {
+                if (value != this.tempStateTxt)
+                {
+                    this.tempStateTxt = value;
+                    NotifyPropertyChanged();
                 }
             }
         }
