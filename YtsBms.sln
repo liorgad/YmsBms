@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{E4C305A8-2F73-44F3-8E64-4C196F05FF6C}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtsBmsGUI", "YtsBmsGUI\YtsBmsGUI.csproj", "{239E0624-FA01-4164-8FBF-B350BD8CCDD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtsLogic", "YtsLogic\YtsLogic.csproj", "{CC636445-7C3B-456C-8C8A-D510A568205C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BD91D1DD-DE8D-4A5C-B88C-312264C73C00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CC636445-7C3B-456C-8C8A-D510A568205C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC636445-7C3B-456C-8C8A-D510A568205C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC636445-7C3B-456C-8C8A-D510A568205C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD91D1DD-DE8D-4A5C-B88C-312264C73C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD91D1DD-DE8D-4A5C-B88C-312264C73C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD91D1DD-DE8D-4A5C-B88C-312264C73C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD91D1DD-DE8D-4A5C-B88C-312264C73C00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

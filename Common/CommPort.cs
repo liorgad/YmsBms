@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class CommPort : IDisposable
+    public class CommPort : IDisposable, ICommPort
     {
         SerialPort serialPort;
         IEventAggregator evAgg;

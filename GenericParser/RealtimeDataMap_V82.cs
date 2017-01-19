@@ -230,7 +230,21 @@ namespace GenericParser
         //public byte ChgNum { get; set; } //Number of charge events
 
         //[ParserDefinition(12, 2)]
-        //public byte pEnergy { get; set; } //Remaining Capacity  
+        //public byte pEnergy { get; set; } //Remaining Capacity 
+
+        public string AsString { get { return ToString(); } }
+
+        public override string ToString()
+        {
+            string tempStr = (string)GenericParser.Build<RealtimeDataMap_V82>(this);
+
+            if (string.IsNullOrWhiteSpace(tempStr))
+            {
+                return null;
+            }
+
+            return tempStr;
+        }
 
     }
 }

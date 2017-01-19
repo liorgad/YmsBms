@@ -61,6 +61,10 @@
       <Project>{fe14e242-1c9b-45f4-8a83-323b14920477}</Project>
       <Name>GenericParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tests\Tests.csproj">
+      <Project>{bd91d1dd-de8d-4a5c-b88c-312264c73c00}</Project>
+      <Name>Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YtsLogic\YtsLogic.csproj">
       <Project>{CC636445-7C3B-456C-8C8A-D510A568205C}</Project>
       <Name>YtsLogic</Name>

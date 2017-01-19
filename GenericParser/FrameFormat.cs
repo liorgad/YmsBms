@@ -28,9 +28,9 @@ namespace GenericParser
     }
 
     public class FrameFormat
-    {       
+    {
         [ParserDefinition(0, 1)]
-        public static char SOI { get; set; }
+        public static char SOI { get; private set; }
 
         [ParserDefinition(1, 2)]
         public byte Address { get; set; }
@@ -43,7 +43,11 @@ namespace GenericParser
         public byte Version { get; set; }
 
         [ParserDefinition(4, 4)]
-        public ushort Length { get; set; }
+        public ushort Length
+        {
+            get;
+            set;
+        }
 
         [ParserDefinition(5, -1, "Length")]
         public string Data { get; set; }
@@ -52,7 +56,7 @@ namespace GenericParser
         public byte CRC { get; set; }
 
         [ParserDefinition(7, 1)]
-        public static char EOI { get; set; }
+        public static char EOI { get; private set; }
 
         public string AsString { get { return ToString(); } }
 
@@ -71,7 +75,14 @@ namespace GenericParser
 
             var crc = CalculateCRC(subStr);
 
+            if (!string.IsNullOrWhiteSpace(Data))
+            {
+                Length += (ushort)Data.Length;
+            }
+
             var result = string.Format("{0}{1}{2}{3}", SOI, subStr, crc, EOI);
+
+            
 
             return result;
         }
@@ -144,5 +155,6 @@ namespace GenericParser
             }
             
         }
+
     }
 }

@@ -18,7 +18,8 @@ namespace YtsLogic
     public class MainLogic : IDisposable
     {
         //SerialPort serialPort = new SerialPort();
-        CommPort commPort = new CommPort();
+        //ICommPort commPort = new Common.Test.CommPortMock();
+        ICommPort commPort = new CommPort();
         IEventAggregator evAgg;
         System.Timers.Timer samplingTimer;
         EventQueue<string> incommingQueue;
@@ -128,6 +129,8 @@ namespace YtsLogic
             try
             {
                 string syncedMessage = SyncMessage(message);
+
+                Debug.WriteLine("Synced msg = " + syncedMessage);
                 
                 if(string.IsNullOrWhiteSpace(syncedMessage))
                 {
@@ -274,14 +277,14 @@ namespace YtsLogic
             ascii.GetChars(asciiBytes, 0, asciiBytes.Length, asciiChars, 0);
             string asciiString = new string(asciiChars);
 
-            Debug.WriteLine("{0} Sending {1}",DateTime.Now,asciiString);
+            Debug.WriteLine(string.Format("{0} Sending {1}",DateTime.Now,asciiString));
             logger.Trace("Sending {0}", asciiString);
 
             //serialPort.Write(asciiChars, 0, asciiChars.Length);
 
             var response = commPort.SendReceive(asciiString);
 
-            Debug.WriteLine("{0} Received {1}",DateTime.Now,response);
+            Debug.WriteLine(string.Format("{0} Received {1}",DateTime.Now,response));
             logger.Trace("Received {0}", response);
 
             incommingQueue.Add(response);

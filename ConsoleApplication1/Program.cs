@@ -12,6 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using YtsLogic;
+using Common.Test;
 
 namespace ConsoleApplication1
 {
@@ -31,21 +32,29 @@ namespace ConsoleApplication1
         static void Main(string[] args)
         {
 
-            var test1 = (System.Drawing.Color)VSTATE.BVOV.ToEnumDefaultValue();
-            #region
-            string first = "008A0000000000000030E7070DF80DF90DF90DF90DF90DF90DF900000000053D3D3C3D3D00000000000000000F00000000000000000000000000000F00D202BC39~:04825200840000000000000030DD070DF60DF60";
-            string sec = "DF60DF60DF60DF60DF600000000023E3E00000000000000000F00000000000000000000000000001E00EA030CC2~:0A82520084000000000000003";
-            string third = "0F1070DFB0DFB0DFA0DFB0DFE0DFD0DFD00000000023E3D00000000000000000F00000000000000000000000000001E00EA030C6D~:098252008A0000000000000030D8070DF50DF3";
+            //var res = GenericParser.GenericParser.Parse<FrameFormat>(realTimeData82_5);
+            //var rt = GenericParser.GenericParser.Parse<RealtimeDataMap_V82>(res.Data);
 
-            MainLogic logic = new MainLogic();
-            logic.HandleParsing(first);
-            logic.HandleParsing(sec);
-            logic.HandleParsing(third);
+            //var rtStr = GenericParser.GenericParser.Build<RealtimeDataMap_V82>(rt);
+
+            //int p = 0;
+
+            //#region
+            //var test1 = (System.Drawing.Color)VSTATE.BVOV.ToEnumDefaultValue();
+            
+            //string first = "008A0000000000000030E7070DF80DF90DF90DF90DF90DF90DF900000000053D3D3C3D3D00000000000000000F00000000000000000000000000000F00D202BC39~:04825200840000000000000030DD070DF60DF60";
+            //string sec = "DF60DF60DF60DF60DF600000000023E3E00000000000000000F00000000000000000000000000001E00EA030CC2~:0A82520084000000000000003";
+            //string third = "0F1070DFB0DFB0DFA0DFB0DFE0DFD0DFD00000000023E3D00000000000000000F00000000000000000000000000001E00EA030C6D~:098252008A0000000000000030D8070DF50DF3";
+
+            //MainLogic logic = new MainLogic();
+            //logic.HandleParsing(first);
+            //logic.HandleParsing(sec);
+            //logic.HandleParsing(third);
 
 
 
-            return;
-            #endregion
+            //return;
+            //#endregion
 
             #region
             //Configuration conf = new Configuration()
@@ -128,9 +137,20 @@ namespace ConsoleApplication1
             #endregion
 
             #region
-            CommPort port = new CommPort();
+            ICommPort port = new CommPortMock();
             port.InitializePort("COM3");
             port.Open();
+
+            FrameFormat realTimeCmd = new FrameFormat()
+            {
+                Address = Convert.ToByte("1"),
+                Cmd = 2,
+                Version = 82
+            };
+
+            var r1 = realTimeCmd.AsString;
+
+            Console.WriteLine(r1);
 
             FrameFormat test = new FrameFormat()
             {                

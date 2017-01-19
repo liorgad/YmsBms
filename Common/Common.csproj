@@ -71,6 +71,7 @@
     <Compile Include="CommPort.cs" />
     <Compile Include="EventAggregatorProvider.cs" />
     <Compile Include="EventQueue.cs" />
+    <Compile Include="ICommPort.cs" />
     <Compile Include="Messages.cs" />
     <Compile Include="SeriesStatViewModel.cs" />
     <Compile Include="Configuration.cs" />

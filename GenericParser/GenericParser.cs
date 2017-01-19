@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -141,27 +142,59 @@ namespace GenericParser
 
                 var resultList = new List<string>();
 
-
-
                 foreach (var item in orderedProperties)
                 {
                     var val = item.GetValue(obj);
                     var type = item.PropertyType;
+                    
                     if (type == typeof(char))
                     {
-                        resultList.Add(Convert.ToString(val));
+                        var str = Convert.ToString(val);
+                        Debug.WriteLine(str);
+                        resultList.Add(str);
                     }
                     else if (type == typeof(byte))
                     {
-                        resultList.Add(((byte)val).ToString("X2"));
+                        var str = ((byte)val).ToString("X2");
+                        Debug.WriteLine(str);
+                        resultList.Add(str);
                     }
                     else if (type == typeof(ushort) || type == typeof(short))
                     {
-                        resultList.Add(((ushort)val).ToString("X4"));
+                        var str = ((ushort)val).ToString("X4");
+                        resultList.Add(str);
+                    }
+                    else if(type == typeof(string))
+                    {
+                        var str = (string)val != null ? (string)val : string.Empty;
+                        Debug.WriteLine(str);
+                        StringBuilder sb = new StringBuilder(str);
+                        resultList.Add(sb.ToString());
+                    }
+                    else if(type == typeof(ulong))
+                    {
+                        var formatString = string.Format("X{0}", item.GetCustomAttribute<ParserDefinitionAttribute>().Length);
+                        var str = ((ulong)val).ToString(formatString);
+                        Debug.WriteLine(str);
+                        resultList.Add(str);
+                    }
+                    else if(type == typeof(ushort[]))
+                    {
+                        var arrAsStr = ((ushort[])val).Select(v => v.ToString("X4")).Aggregate((v1, v2) => string.Format("{0}{1}",v1,v2));
+                        Debug.WriteLine(arrAsStr);
+                        resultList.Add(arrAsStr);
+                    }
+                    else if (type == typeof(byte[]))
+                    {
+                        var arrAsStr = ((byte[])val).Select(v => v.ToString("X2")).Aggregate((v1, v2) => string.Format("{0}{1}", v1, v2));
+                        Debug.WriteLine(arrAsStr);
+                        resultList.Add(arrAsStr);
                     }
                 }
 
-                return resultList.Aggregate((s1, s2) => s1 + s2);
+                var res = resultList.Aggregate((s1, s2) => s1 + s2);
+                Debug.WriteLine(res);
+                return res;
             }
             catch(Exception e)
             {
