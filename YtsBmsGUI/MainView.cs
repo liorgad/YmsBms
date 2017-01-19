@@ -32,6 +32,7 @@ namespace YtsBmsGUI
         IEventAggregator evAgg { get; set; }
         Dictionary<string, Control> batteryAddressCtrlMap = new Dictionary<string, Control>();
         MainLogic logic;
+        
 
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -348,45 +349,48 @@ namespace YtsBmsGUI
             var dialogResult = newBatteryView.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
-                if (!SharedData.Default.BatteryPackContainer.ContainsKey(newBatteryView.Address.ToString()))
+                foreach (var item in newBatteryView.Address)
                 {
-                    var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = newBatteryView.IsPartOfCluster };
-                    viewModel.Address = newBatteryView.Address.ToString();
-
-                    logic.AddBattery(viewModel);
-                    //SharedData.Default.BatteryPackContainer.TryAdd(
-                    //    newBatteryView.Address.ToString(),
-                    //    viewModel);
-
-                    if (!viewModel.IsPartOfCluster)
+                    if (!SharedData.Default.BatteryPackContainer.ContainsKey(item.ToString()))
                     {
-                        ShowBatteryStat(viewModel.Address);
-                        //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
-                        //this.flowLayoutPanel1.Controls.Add(statUC);
-                    }
+                        var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = newBatteryView.IsPartOfCluster };
+                        viewModel.Address = item.ToString();
 
-                    //toolStripLabel1.Text = string.Format("Battery added : {0}", viewModel.Address);
-                }
-                else
-                {
-                    if (!newBatteryView.IsPartOfCluster)
-                    {
-                        BatteryStatViewModel viewModel;
-                        bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(newBatteryView.Address.ToString(), out viewModel);
-                        if (succeeded)
+                        logic.AddBattery(viewModel);
+                        //SharedData.Default.BatteryPackContainer.TryAdd(
+                        //    newBatteryView.Address.ToString(),
+                        //    viewModel);
+
+                        if (!viewModel.IsPartOfCluster)
                         {
-                            viewModel.IsPartOfCluster = newBatteryView.IsPartOfCluster;
-
                             ShowBatteryStat(viewModel.Address);
                             //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
                             //this.flowLayoutPanel1.Controls.Add(statUC);
                         }
+
+                        //toolStripLabel1.Text = string.Format("Battery added : {0}", viewModel.Address);
                     }
-                }
+                    else
+                    {
+                        if (!newBatteryView.IsPartOfCluster)
+                        {
+                            BatteryStatViewModel viewModel;
+                            bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(item.ToString(), out viewModel);
+                            if (succeeded)
+                            {
+                                viewModel.IsPartOfCluster = newBatteryView.IsPartOfCluster;
 
-                AddToTreeView(newBatteryView.Address.ToString(), string.Format("Battery : {0}", newBatteryView.Address), 0);
+                                ShowBatteryStat(viewModel.Address);
+                                //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
+                                //this.flowLayoutPanel1.Controls.Add(statUC);
+                            }
+                        }
+                    }
 
-                logger.Info(string.Format("Added Battery : {0}", newBatteryView.Address));
+                    AddToTreeView(item.ToString(), string.Format("Battery : {0}", item), 0);
+
+                    logger.Info(string.Format("Added Battery : {0}", item));
+                } 
             }
         }
 

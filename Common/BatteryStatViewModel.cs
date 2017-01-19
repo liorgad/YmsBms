@@ -12,25 +12,25 @@ namespace Common
 {
     public class BatteryStatViewModel : INotifyPropertyChanged
     {
-        private double current;
-        private double voltage;
-        private int temperature;
-        private string address;
-        private byte version;
-        private int soc;
-        private bool dfet;
-        private bool cfet;
-        private string protection;
-        private ushort chargeState;
-        private ushort temperatureState;
-        private ushort voltageState;
-        private Color protectionBackColor = Color.Transparent;
-        private Color voltageForeColor = Color.Black;
-        private Color currentForeColor = Color.Black;
-        private Color temperatureForeColor = Color.Black;
-        private string voltageStateTxt;
-        private string currentStateTxt;
-        private string tempStateTxt;
+        protected double current;
+        protected double voltage;
+        protected int temperature;
+        protected string address;
+        protected byte version;
+        protected int soc;
+        protected bool dfet;
+        protected bool cfet;
+        protected string protection;
+        protected ushort chargeState;
+        protected ushort temperatureState;
+        protected ushort voltageState;
+        protected Color protectionBackColor = SystemColors.Control;
+        protected Color voltageForeColor = Color.Black;
+        protected Color currentForeColor = Color.Black;
+        protected Color temperatureForeColor = Color.Black;
+        protected string voltageStateTxt;
+        protected string currentStateTxt;
+        protected string tempStateTxt;
 
         public SynchronizationContext SyncCtx { get; set; }
 

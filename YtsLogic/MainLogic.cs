@@ -356,7 +356,7 @@ namespace YtsLogic
             vm.VoltageState = realTimeData.VState;
 
             string protection = string.Empty;
-            Color backColor = Color.Transparent;
+            Color backColor = SystemColors.Control;
             Color foreColor = Color.Black;
 
             if (vm.VoltageState == 0)

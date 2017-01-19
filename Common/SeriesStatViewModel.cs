@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -11,6 +12,7 @@ namespace Common
 {
     public class SeriesStatViewModel : BatteryStatViewModel, IDisposable
     {
+        protected new double voltageState;
         public IEnumerable<BatteryStatViewModel> SeriesBatteriesAddresses { get; set; }
 
         //Dictionary<string, PropertyInfo> properyInfoMap;
@@ -72,7 +74,7 @@ namespace Common
             }
             else
             {
-                ProtectionBackColor = System.Drawing.Color.Transparent;
+                ProtectionBackColor = SystemColors.Control;
                 Protection = string.Empty;
             }
 
@@ -81,14 +83,40 @@ namespace Common
 
         public override double Voltage
         {
-            get;
-            set;
+            get { return this.voltageState; }
+            set
+            {
+                if (value != this.voltageState)
+                {
+                    this.voltageState = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
-
         public override int Temperature
         {
-            get;
-            set;
+            get { return (this.temperature); }
+            set
+            {
+                if (value != this.temperature)
+                {
+                    this.temperature = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public override double Current
+        {
+            get { return (this.current); }
+            set
+            {
+                if (value != this.current)
+                {
+                    this.current = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         public void Dispose()

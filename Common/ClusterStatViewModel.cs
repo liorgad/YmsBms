@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,7 @@ namespace Common
 {
     public class ClusterStatViewModel : BatteryStatViewModel, IDisposable
     {
+        protected new double voltageState;
 
         public List<SeriesStatViewModel> SeriesVm
         {
@@ -68,14 +70,49 @@ namespace Common
                 }
                 else
                 {
-                    ProtectionBackColor =  System.Drawing.Color.Transparent;
+                    ProtectionBackColor =  SystemColors.Control;
                     Protection = string.Empty;
                 }
             }
         }
 
-        public override double Voltage { get; set; }
-        public override int Temperature { get; set; }        
+        public override double Voltage
+        {
+            get { return this.voltageState; }
+            set
+            {
+                if (value != this.voltageState)
+                {
+                    this.voltageState = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public override int Temperature
+        {
+            get { return (this.temperature); }
+            set
+            {
+                if (value != this.temperature)
+                {
+                    this.temperature = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public override double Current
+        {
+            get { return (this.current); }
+            set
+            {
+                if (value != this.current)
+                {
+                    this.current = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }        
 
         public void Dispose()
         {

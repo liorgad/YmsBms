@@ -30,6 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.bindingSource_batterStats = new System.Windows.Forms.BindingSource(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.label_volt = new System.Windows.Forms.Label();
             this.label_current = new System.Windows.Forms.Label();
             this.label_temperature = new System.Windows.Forms.Label();
@@ -44,15 +47,12 @@
             this.label_CFET = new System.Windows.Forms.Label();
             this.button_delete = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.bindingSource_batterStats = new System.Windows.Forms.BindingSource(this.components);
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource_batterStats)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -60,7 +60,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 53.84615F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 46.15385F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 74F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             this.tableLayoutPanel1.Controls.Add(this.textBox2, 1, 7);
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 1, 6);
             this.tableLayoutPanel1.Controls.Add(this.label_volt, 0, 0);
@@ -94,6 +94,44 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(339, 255);
             this.tableLayoutPanel1.TabIndex = 2;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 2);
+            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource_batterStats, "TemperatureStateTxt", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.bindingSource_batterStats, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", this.bindingSource_batterStats, "TemperatureForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.textBox2.Location = new System.Drawing.Point(145, 231);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(191, 21);
+            this.textBox2.TabIndex = 19;
+            // 
+            // bindingSource_batterStats
+            // 
+            this.bindingSource_batterStats.DataSource = typeof(Common.BatteryStatViewModel);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource_batterStats, "CurrentStateTxt", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.bindingSource_batterStats, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", this.bindingSource_batterStats, "CurrentForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.textBox1.Location = new System.Drawing.Point(145, 201);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(191, 24);
+            this.textBox1.TabIndex = 18;
             // 
             // label_volt
             // 
@@ -152,7 +190,7 @@
             this.textBox_voltage.Location = new System.Drawing.Point(145, 3);
             this.textBox_voltage.Name = "textBox_voltage";
             this.textBox_voltage.ReadOnly = true;
-            this.textBox_voltage.Size = new System.Drawing.Size(116, 22);
+            this.textBox_voltage.Size = new System.Drawing.Size(115, 22);
             this.textBox_voltage.TabIndex = 5;
             // 
             // textBox_current
@@ -162,7 +200,7 @@
             this.textBox_current.Location = new System.Drawing.Point(145, 34);
             this.textBox_current.Name = "textBox_current";
             this.textBox_current.ReadOnly = true;
-            this.textBox_current.Size = new System.Drawing.Size(116, 22);
+            this.textBox_current.Size = new System.Drawing.Size(115, 22);
             this.textBox_current.TabIndex = 6;
             // 
             // textBox_temperature
@@ -172,7 +210,7 @@
             this.textBox_temperature.Location = new System.Drawing.Point(145, 70);
             this.textBox_temperature.Name = "textBox_temperature";
             this.textBox_temperature.ReadOnly = true;
-            this.textBox_temperature.Size = new System.Drawing.Size(116, 22);
+            this.textBox_temperature.Size = new System.Drawing.Size(115, 22);
             this.textBox_temperature.TabIndex = 7;
             // 
             // progressBar_stateOfCharge
@@ -181,7 +219,7 @@
             this.progressBar_stateOfCharge.DataBindings.Add(new System.Windows.Forms.Binding("Value", this.bindingSource_batterStats, "SOC", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.progressBar_stateOfCharge.Location = new System.Drawing.Point(145, 106);
             this.progressBar_stateOfCharge.Name = "progressBar_stateOfCharge";
-            this.progressBar_stateOfCharge.Size = new System.Drawing.Size(116, 23);
+            this.progressBar_stateOfCharge.Size = new System.Drawing.Size(115, 23);
             this.progressBar_stateOfCharge.TabIndex = 8;
             // 
             // textBox_protection
@@ -223,16 +261,16 @@
             this.label_CFET.ForeColor = System.Drawing.Color.White;
             this.label_CFET.Location = new System.Drawing.Point(145, 140);
             this.label_CFET.Name = "label_CFET";
-            this.label_CFET.Size = new System.Drawing.Size(116, 24);
+            this.label_CFET.Size = new System.Drawing.Size(115, 24);
             this.label_CFET.TabIndex = 11;
             this.label_CFET.Text = "CFET";
             // 
             // button_delete
             // 
             this.button_delete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button_delete.Location = new System.Drawing.Point(267, 3);
+            this.button_delete.Location = new System.Drawing.Point(266, 3);
             this.button_delete.Name = "button_delete";
-            this.button_delete.Size = new System.Drawing.Size(69, 21);
+            this.button_delete.Size = new System.Drawing.Size(70, 21);
             this.button_delete.TabIndex = 14;
             this.button_delete.Text = "X";
             this.button_delete.UseVisualStyleBackColor = true;
@@ -243,23 +281,11 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource_batterStats, "SOC", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label2.Location = new System.Drawing.Point(267, 110);
+            this.label2.Location = new System.Drawing.Point(266, 110);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 16);
+            this.label2.Size = new System.Drawing.Size(70, 16);
             this.label2.TabIndex = 15;
             this.label2.Text = "20%";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.tableLayoutPanel1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(345, 276);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
             // 
             // label3
             // 
@@ -281,55 +307,31 @@
             this.label4.TabIndex = 17;
             this.label4.Text = "Temperature State :";
             // 
-            // textBox1
+            // groupBox1
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource_batterStats, "CurrentStateTxt", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.bindingSource_batterStats, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", this.bindingSource_batterStats, "CurrentForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.textBox1.Location = new System.Drawing.Point(145, 201);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(191, 24);
-            this.textBox1.TabIndex = 18;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 2);
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource_batterStats, "TemperatureStateTxt", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.bindingSource_batterStats, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", this.bindingSource_batterStats, "TemperatureForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.textBox2.Location = new System.Drawing.Point(145, 231);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(191, 21);
-            this.textBox2.TabIndex = 19;
-            // 
-            // bindingSource_batterStats
-            // 
-            this.bindingSource_batterStats.DataSource = typeof(Common.BatteryStatViewModel);
+            this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.groupBox1.Controls.Add(this.tableLayoutPanel1);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(345, 276);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "groupBox1";
             // 
             // BatteryStats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.LightGreen;
             this.Controls.Add(this.groupBox1);
             this.Name = "BatteryStats";
             this.Size = new System.Drawing.Size(345, 276);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource_batterStats)).EndInit();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
