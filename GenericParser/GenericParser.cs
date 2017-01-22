@@ -121,7 +121,7 @@ namespace GenericParser
             return null;
         }
 
-        public static object Build<T>(T obj,DataType resultDataType = DataType.ASCII_HEX)
+        public static string Build<T>(T obj,DataType resultDataType = DataType.ASCII_HEX)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace GenericParser
 
                 if (null == properties)
                 {
-                    return default(T);
+                    return null;
                 }
 
                 var orderedProperties = properties.OrderBy(p => ((ParserDefinitionAttribute)p.GetCustomAttribute(typeof(ParserDefinitionAttribute))).Index);
@@ -137,7 +137,7 @@ namespace GenericParser
 
                 if (null == orderedProperties)
                 {
-                    return default(T);
+                    return null;
                 }
 
                 var resultList = new List<string>();
@@ -167,9 +167,8 @@ namespace GenericParser
                     else if(type == typeof(string))
                     {
                         var str = (string)val != null ? (string)val : string.Empty;
-                        //Debug.WriteLine(str);
-                        StringBuilder sb = new StringBuilder(str);
-                        resultList.Add(sb.ToString());
+                        //Debug.WriteLine(str);                        
+                        resultList.Add(str);
                     }
                     else if(type == typeof(ulong))
                     {

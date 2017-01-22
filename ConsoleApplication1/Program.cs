@@ -31,7 +31,70 @@ namespace ConsoleApplication1
         //Address=5 Voltage=25.028 Current=0 Temp=22 SOC=32 DFET=True CFET=True Protection= ChargeState=0 TempState=0 VoltState=0
         static void Main(string[] args)
         {
+            FrameFormat realTimeCmd = new FrameFormat()
+            {
+                Address = Convert.ToByte(5),
+                Cmd = 2,
+                Version = 82
+            };
 
+            FrameFormat.SOI = ':';
+            FrameFormat.EOI = '~';
+
+            var rt = new RealtimeDataMap_V82()
+            {
+                Alarm = 0,
+                BalanceState = 0,
+                CapFull = 700,
+                CapNow = 175,
+                ChgNum = 0,
+                CState = 0,
+                Current = new ushort[] { 0, 0 },
+                DchgNum = 0,
+                FETState = 15,
+                SOC = 32,
+                Temp = new byte[] { 62, 61, 62, 61, 62 },
+                TempNum = 5,
+                Time_t = 0,
+                TState = 0,
+                Vbat = 12514,
+                VCell = new ushort[] { 3529, 3583, 3583, 3583, 3584, 3584, 3583 },
+                VCell_num = 7,
+                VState = 0,
+                Warn_VHigh = 0,
+                Warn_VLow = 0,
+                Warn_VOV = 0,
+                Warn_VUV = 0
+            };
+
+            var frameFormat = new FrameFormat()
+            {
+                Address = 0,
+                Cmd = (byte)CommandResponse.RealTimeData,
+                Version = (byte)GenericParser.Version.Version82
+            };
+
+            for (int i = 0; i < 2; i++)
+            {
+                //var inStr = @":050252000E00~";
+
+                var inStr = realTimeCmd.ToString();
+
+                var ff = GenericParser.GenericParser.Parse<FrameFormat>(inStr);
+
+                frameFormat.Address = ff.Address;
+
+                var rtAsStr = rt.AsString;
+                frameFormat.Data = rtAsStr;
+
+                // return @":058252008A0000000000000030E2070DC90DFF0DFF0DFF0E000E000DFF00000000053E3D3E3D3E00000000000000000F00000000000000000000000000002000AF02BC54~";                     
+
+                var str = frameFormat.AsString;
+
+                Console.WriteLine(str);
+            }
+
+            return;
             //var res = GenericParser.GenericParser.Parse<FrameFormat>(realTimeData82_5);
             //var rt = GenericParser.GenericParser.Parse<RealtimeDataMap_V82>(res.Data);
 
@@ -41,7 +104,7 @@ namespace ConsoleApplication1
 
             //#region
             //var test1 = (System.Drawing.Color)VSTATE.BVOV.ToEnumDefaultValue();
-            
+
             //string first = "008A0000000000000030E7070DF80DF90DF90DF90DF90DF90DF900000000053D3D3C3D3D00000000000000000F00000000000000000000000000000F00D202BC39~:04825200840000000000000030DD070DF60DF60";
             //string sec = "DF60DF60DF60DF60DF600000000023E3E00000000000000000F00000000000000000000000000001E00EA030CC2~:0A82520084000000000000003";
             //string third = "0F1070DFB0DFB0DFA0DFB0DFE0DFD0DFD00000000023E3D00000000000000000F00000000000000000000000000001E00EA030C6D~:098252008A0000000000000030D8070DF50DF3";
@@ -136,53 +199,53 @@ namespace ConsoleApplication1
 
             #endregion
 
-            #region
-            ICommPort port = new CommPortMock();
-            port.InitializePort("COM3");
-            port.Open();
+            //#region
+            //ICommPort port = new CommPortMock();
+            //port.InitializePort("COM3");
+            //port.Open();
 
-            FrameFormat realTimeCmd = new FrameFormat()
-            {
-                Address = Convert.ToByte("1"),
-                Cmd = 2,
-                Version = 82
-            };
+            //FrameFormat realTimeCmd = new FrameFormat()
+            //{
+            //    Address = Convert.ToByte("1"),
+            //    Cmd = 2,
+            //    Version = 82
+            //};
 
-            var r1 = realTimeCmd.AsString;
+            //var r1 = realTimeCmd.AsString;
 
-            Console.WriteLine(r1);
+            //Console.WriteLine(r1);
 
-            FrameFormat test = new FrameFormat()
-            {                
-                Address = 4,
-                Cmd = (byte)Command.RealTimeData,
-                Version = (byte)GenericParser.Version.Version82                
-            };
+            //FrameFormat test = new FrameFormat()
+            //{                
+            //    Address = 4,
+            //    Cmd = (byte)Command.RealTimeData,
+            //    Version = (byte)GenericParser.Version.Version82                
+            //};
 
-            Console.WriteLine(test.AsString);
+            //Console.WriteLine(test.AsString);
 
-            if (port.IsOpen)
-            {
-                port.SendWrite(test.AsString);
-                Thread.Sleep(50);
-            }
+            //if (port.IsOpen)
+            //{
+            //    port.SendWrite(test.AsString);
+            //    Thread.Sleep(50);
+            //}
 
-            //nsole.ReadKey();
-            for (int i = 0; i < 100; i++)
-            {
-                if (port.IsOpen)
-                {
-                    var sw = Stopwatch.StartNew();
-                    sw.Start();
-                    var result = port.SendReceive(test.AsString);
-                    sw.Stop();
-                    Console.WriteLine(sw.ElapsedMilliseconds + " " + result);
-                }
-                Thread.Sleep(250);
-            }
-            Console.ReadLine();
-            return;
-            #endregion
+            ////nsole.ReadKey();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    if (port.IsOpen)
+            //    {
+            //        var sw = Stopwatch.StartNew();
+            //        sw.Start();
+            //        var result = port.SendReceive(test.AsString);
+            //        sw.Stop();
+            //        Console.WriteLine(sw.ElapsedMilliseconds + " " + result);
+            //    }
+            //    Thread.Sleep(250);
+            //}
+            //Console.ReadLine();
+            //return;
+            //#endregion
 
             #region
 

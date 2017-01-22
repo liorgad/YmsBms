@@ -55,10 +55,13 @@ namespace Common
             else
             {
 
-                var protecList = SeriesVm.Where(bvm => 
-                ((bvm.ChargeState != 0) && (bvm.CurrentForeColor == System.Drawing.Color.Red)) ||
-                ((bvm.VoltageState != 0) && (bvm.VoltageForeColor == System.Drawing.Color.Red)) ||
-                ((bvm.TemperatureState != 0) && (bvm.TemperatureForeColor == System.Drawing.Color.Red)));
+                //var protecList = SeriesVm.Where(bvm => 
+                //((bvm.ChargeState != 0) && (bvm.CurrentForeColor == System.Drawing.Color.Red)) ||
+                //((bvm.VoltageState != 0) && (bvm.VoltageForeColor == System.Drawing.Color.Red)) ||
+                //((bvm.TemperatureState != 0) && (bvm.TemperatureForeColor == System.Drawing.Color.Red)));
+
+                var protecList = SeriesVm.Where(sr =>
+                sr.ProtectionBackColor == Color.Red);
 
                 if (protecList.Count() > 0)
                 {

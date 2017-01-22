@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using System.Reflection;
+using NLog;
 
 namespace GenericParser
 {
     public enum Command : byte
     {
         ProtectionData = 1,
-        RealTimeData =2,
+        RealTimeData = 2,
         DataSetting = 5,
         FETOperation = 6,
         Version = 9
@@ -29,8 +30,11 @@ namespace GenericParser
 
     public class FrameFormat
     {
+        private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private string frameFormatStr;
         [ParserDefinition(0, 1)]
-        public static char SOI { get; private set; }
+        public static char SOI { get; set; }
 
         [ParserDefinition(1, 2)]
         public byte Address { get; set; }
@@ -56,15 +60,26 @@ namespace GenericParser
         public byte CRC { get; set; }
 
         [ParserDefinition(7, 1)]
-        public static char EOI { get; private set; }
+        public static char EOI { get; set; }
 
-        public string AsString { get { return ToString(); } }
+        public string AsString
+        {
+            get
+            {
+                frameFormatStr = this.ToString();
+                return frameFormatStr;
+            }
+        }
 
         public override string ToString()
         {
-            string tempStr = (string)GenericParser.Build<FrameFormat>(this);
+            var length = CalculateLength();
 
-            if(string.IsNullOrWhiteSpace(tempStr))
+            Length = Convert.ToUInt16(length);
+
+            string tempStr = (string)GenericParser.Build<FrameFormat>(this);            
+
+            if (string.IsNullOrWhiteSpace(tempStr))
             {
                 return null;
             }
@@ -75,42 +90,14 @@ namespace GenericParser
 
             var crc = CalculateCRC(subStr);
 
-            if (!string.IsNullOrWhiteSpace(Data))
-            {
-                Length += (ushort)Data.Length;
-            }
-
             var result = string.Format("{0}{1}{2}{3}", SOI, subStr, crc, EOI);
 
-            
+
 
             return result;
         }
 
-        public static string CalculateCRC(string str)
-        {
-            //crc cala verification method (C language)
-            // i = length of string
-
-            char[] strAsChars = str.ToCharArray();
-
-            byte sum =0;
-
-            for (int i = 0; i < strAsChars.Length; i++)
-            {
-                sum += Convert.ToByte(strAsChars[i]);
-            }
-
-            return (sum ^= 0xFF).ToString("X2");
-        }
-
-        static FrameFormat()
-        {
-            SOI = ':';
-            EOI = '~';               
-        }
-
-        public FrameFormat()
+        public int CalculateLength()
         {
             try
             {
@@ -118,7 +105,7 @@ namespace GenericParser
 
                 if (null == properties)
                 {
-                    return;
+                    return -1;
                 }
 
                 var orderedProperties = properties.OrderBy(p => ((ParserDefinitionAttribute)p.GetCustomAttribute(typeof(ParserDefinitionAttribute))).Index);
@@ -126,7 +113,7 @@ namespace GenericParser
 
                 if (null == orderedProperties)
                 {
-                    return;
+                    return -1;
                 }
 
                 int totalLength = 0;
@@ -139,22 +126,63 @@ namespace GenericParser
                     {
                         if (length == -1)
                         {
-                            continue;
+                            if (item.PropertyType.IsArray)
+                            {
+                                Array arr = (Array)item.GetValue(this);
+                                totalLength += arr.Length;
+                            }
+                            else if (item.PropertyType == typeof(string))
+                            {
+                                string str = (string)item.GetValue(this);
+                                if (!string.IsNullOrWhiteSpace(str))
+                                {
+                                    totalLength += str.Length;
+                                }
+                            }
                         }
-
                     }
-                    totalLength += length;
+                    else
+                    {
+                        totalLength += length;
+                    }                   
                 }
 
-                Length = Convert.ToUInt16(totalLength);
-            }
-            catch (Exception)
-            {
+                return totalLength;
 
-                throw;
             }
-            
+            catch (Exception e)
+            {
+                logger.Error(e, "Error calculating length");
+            }
+
+            return -1;
         }
 
+        public static string CalculateCRC(string str)
+        {
+            //crc cala verification method (C language)
+            // i = length of string
+
+            char[] strAsChars = str.ToCharArray();
+
+            byte sum = 0;
+
+            for (int i = 0; i < strAsChars.Length; i++)
+            {
+                sum += Convert.ToByte(strAsChars[i]);
+            }
+
+            return (sum ^= 0xFF).ToString("X2");
+        }
+
+        static FrameFormat()
+        {
+            SOI = ':';
+            EOI = '~';
+        }
+
+        public FrameFormat()
+        {
+        }
     }
 }

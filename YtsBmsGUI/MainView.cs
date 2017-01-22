@@ -451,7 +451,7 @@ namespace YtsBmsGUI
                     vmGroup);
             }
 
-            group.IsSeries = false;
+            group.IsSeries = true;
             group.Address = "cluster";
 
             logic.AddCluster(group);

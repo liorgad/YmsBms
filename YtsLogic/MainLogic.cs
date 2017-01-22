@@ -12,6 +12,7 @@ using NLog;
 using GenericParser;
 using System.Threading;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace YtsLogic
 {
@@ -19,7 +20,8 @@ namespace YtsLogic
     {
         //SerialPort serialPort = new SerialPort();
         //ICommPort commPort = new Common.Test.CommPortMock();
-        ICommPort commPort = new CommPort();
+        //ICommPort commPort = new CommPort();
+        ICommPort commPort;
         IEventAggregator evAgg;
         System.Timers.Timer samplingTimer;
         EventQueue<string> incommingQueue;
@@ -33,6 +35,14 @@ namespace YtsLogic
         {
             evAgg = Common.EventAggregatorProvider.EventAggregator;
             incommingQueue = new EventQueue<string>(HandleParsing);
+
+            //var frm = new BmsSim.Form1();
+
+            //frm.Show();
+
+            //commPort = frm;
+
+            commPort = new CommPort();
         }
 
         public void Initialize(string portName)
@@ -241,6 +251,8 @@ namespace YtsLogic
                         Version = 82                        
                     };
 
+                    FrameFormat.SOI = ':';
+                    FrameFormat.EOI = '~';
                     if (commPort.IsOpen)
                     {
                         //ring data = ":000252000EFE~";
@@ -378,7 +390,7 @@ namespace YtsLogic
             else
             {
                 vm.CurrentStateTxt = ((CSTATE)vm.ChargeState).ToEnumDescription();
-                vm.CurrentForeColor = (System.Drawing.Color)((CSTATE)vm.VoltageState).ToEnumDefaultValue();
+                vm.CurrentForeColor = (System.Drawing.Color)((CSTATE)vm.ChargeState).ToEnumDefaultValue();
             }
 
             if (vm.TemperatureState == 0)
@@ -389,7 +401,7 @@ namespace YtsLogic
             else
             {
                 vm.TemperatureStateTxt = ((TSTATE)vm.TemperatureState).ToEnumDescription();
-                vm.TemperatureForeColor = (System.Drawing.Color)((TSTATE)vm.VoltageState).ToEnumDefaultValue();
+                vm.TemperatureForeColor = (System.Drawing.Color)((TSTATE)vm.TemperatureState).ToEnumDefaultValue();
             }
 
             Debug.WriteLine(vm.ToString());

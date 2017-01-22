@@ -118,7 +118,6 @@ namespace Common
                 }
             }
         }
-
         public void Dispose()
         {
             if (null != updateTimer)
