@@ -36,13 +36,13 @@ namespace YtsLogic
             evAgg = Common.EventAggregatorProvider.EventAggregator;
             incommingQueue = new EventQueue<string>(HandleParsing);
 
-            var frm = new BmsSim.Form1();
+            //var frm = new BmsSim.Form1();
 
-            frm.Show();
+            //frm.Show();
 
-            commPort = frm;
+            //commPort = frm;
 
-            //commPort = new CommPort();
+            commPort = new CommPort();
         }
 
         public void Initialize(string portName)
