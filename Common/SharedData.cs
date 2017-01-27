@@ -17,6 +17,8 @@ namespace Common
     {        
         public static SharedData Default { get; private set; }
 
+        public const string CLUSTER = "cluster";
+
         static SharedData()
         {
             Default = new SharedData();
@@ -30,8 +32,9 @@ namespace Common
 
         public ClusterStatViewModel ClusterStatisticsVM { get; set; }
 
-        public void Load(SynchronizationContext syncCtx)
+        public ConfigurationSerialization Load(SynchronizationContext syncCtx)
         {
+            ConfigurationSerialization confSer;
             if (File.Exists("data.json"))
             {
                 using (var stream = new StreamReader("data.json"))
@@ -41,14 +44,15 @@ namespace Common
 
                     var jsonString = stream.ReadToEnd();
                     
-                    Default = JsonConvert.DeserializeObject<SharedData>(jsonString);
+                    confSer = JsonConvert.DeserializeObject<ConfigurationSerialization>(jsonString);
                 }
+
+                this.BatteryPackContainer.Clear();
+
+                return confSer;
             }
 
-            foreach (var item in Default.BatteryPackContainer.Values)
-            {
-                item.SyncCtx = syncCtx;
-            }
+            return null;
         }
 
 
@@ -59,7 +63,20 @@ namespace Common
                 //DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(SharedData));
                 //ser.WriteObject(stream, Default);
 
-                var output = JsonConvert.SerializeObject(Default);
+                var hasCluster = this.BatteryPackContainer.Keys.Contains(CLUSTER);
+                var isParallel = hasCluster ? this.BatteryPackContainer[CLUSTER] is SeriesStatViewModel : false;
+
+                ConfigurationSerialization ser = new ConfigurationSerialization()
+                {
+                    DefinedAddresses = this.BatteryPackContainer.Where(bs => bs.Key != CLUSTER)?.Select(bs => bs.Value.Address)?.ToList(),
+                    HasCluster = hasCluster,
+                    IsParallel = isParallel,
+                    Group1 = isParallel ? ((SeriesStatViewModel)this.BatteryPackContainer[CLUSTER]).SeriesBatteriesAddresses.Select(b => b.Address).ToList() :
+                    ((ClusterStatViewModel)this.BatteryPackContainer[CLUSTER]).SeriesVm[0].SeriesBatteriesAddresses.Select(b => b.Address).ToList(),
+                    Group2 = isParallel ? null : ((ClusterStatViewModel)this.BatteryPackContainer[CLUSTER]).SeriesVm[1].SeriesBatteriesAddresses.Select(b => b.Address).ToList()
+                };
+
+                var output = JsonConvert.SerializeObject(ser);
                 stream.Write(output);                
             }
         }

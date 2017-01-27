@@ -216,6 +216,7 @@
             this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 2);
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.clusterStatViewModelBindingSource, "Protection", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", this.clusterStatViewModelBindingSource, "ProtectionBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", this.clusterStatViewModelBindingSource, "CurrentForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.Location = new System.Drawing.Point(159, 176);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";

@@ -70,6 +70,7 @@
     <Compile Include="BatteryStatViewModel.cs" />
     <Compile Include="ClusterStatViewModel.cs" />
     <Compile Include="CommPort.cs" />
+    <Compile Include="ConfigurationSerialization.cs" />
     <Compile Include="EventAggregatorProvider.cs" />
     <Compile Include="EventQueue.cs" />
     <Compile Include="ICommPort.cs" />

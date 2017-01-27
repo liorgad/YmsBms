@@ -349,48 +349,53 @@ namespace YtsBmsGUI
             var dialogResult = newBatteryView.ShowDialog(this);
             if (dialogResult == DialogResult.OK)
             {
-                foreach (var item in newBatteryView.Address)
+                AddBatteries(newBatteryView.Address, newBatteryView.IsPartOfCluster);
+            }
+        }
+
+        private void AddBatteries(IEnumerable<byte> addresses,bool isPartOfCluster)
+        {
+            foreach (var item in addresses)
+            {
+                if (!SharedData.Default.BatteryPackContainer.ContainsKey(item.ToString()))
                 {
-                    if (!SharedData.Default.BatteryPackContainer.ContainsKey(item.ToString()))
+                    var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = isPartOfCluster };
+                    viewModel.Address = item.ToString();
+
+                    logic.AddBattery(viewModel);
+                    //SharedData.Default.BatteryPackContainer.TryAdd(
+                    //    newBatteryView.Address.ToString(),
+                    //    viewModel);
+
+                    if (!viewModel.IsPartOfCluster)
                     {
-                        var viewModel = new BatteryStatViewModel(WindowsFormsSynchronizationContext.Current) { IsPartOfCluster = newBatteryView.IsPartOfCluster };
-                        viewModel.Address = item.ToString();
+                        ShowBatteryStat(viewModel.Address);
+                        //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
+                        //this.flowLayoutPanel1.Controls.Add(statUC);
+                    }
 
-                        logic.AddBattery(viewModel);
-                        //SharedData.Default.BatteryPackContainer.TryAdd(
-                        //    newBatteryView.Address.ToString(),
-                        //    viewModel);
-
-                        if (!viewModel.IsPartOfCluster)
+                    //toolStripLabel1.Text = string.Format("Battery added : {0}", viewModel.Address);
+                }
+                else
+                {
+                    if (!isPartOfCluster)
+                    {
+                        BatteryStatViewModel viewModel;
+                        bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(item.ToString(), out viewModel);
+                        if (succeeded)
                         {
+                            viewModel.IsPartOfCluster = isPartOfCluster;
+
                             ShowBatteryStat(viewModel.Address);
                             //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
                             //this.flowLayoutPanel1.Controls.Add(statUC);
                         }
-
-                        //toolStripLabel1.Text = string.Format("Battery added : {0}", viewModel.Address);
                     }
-                    else
-                    {
-                        if (!newBatteryView.IsPartOfCluster)
-                        {
-                            BatteryStatViewModel viewModel;
-                            bool succeeded = SharedData.Default.BatteryPackContainer.TryGetValue(item.ToString(), out viewModel);
-                            if (succeeded)
-                            {
-                                viewModel.IsPartOfCluster = newBatteryView.IsPartOfCluster;
+                }
 
-                                ShowBatteryStat(viewModel.Address);
-                                //var statUC = new BatteryStats(newBatteryView.Address.ToString(), viewModel);
-                                //this.flowLayoutPanel1.Controls.Add(statUC);
-                            }
-                        }
-                    }
+                AddToTreeView(item.ToString(), string.Format("Battery : {0}", item), 0);
 
-                    AddToTreeView(item.ToString(), string.Format("Battery : {0}", item), 0);
-
-                    logger.Info(string.Format("Added Battery : {0}", item));
-                } 
+                logger.Info(string.Format("Added Battery : {0}", item));
             }
         }
 
@@ -518,54 +523,29 @@ namespace YtsBmsGUI
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SharedData.Default.Load(WindowsFormsSynchronizationContext.Current);
+            var confDeserializtion = SharedData.Default.Load(WindowsFormsSynchronizationContext.Current);
 
-            if (SharedData.Default.BatteryPackContainer.ContainsKey("cluster"))
+            if (null != confDeserializtion.DefinedAddresses )
             {
-                HandleClusterLoad();
-            }
-            else
-            {
-                HandleBatteriesLoad();
-            }
-        }
+                ClearFlowPanel();
+                ClearTreeView();
 
-        private void HandleBatteriesLoad()
-        {
-            foreach (var item in SharedData.Default.BatteryPackContainer)
-            {
-                var addr = item.Key;
-                var viewModel = item.Value;
-                var statUC = new BatteryStats(addr, viewModel);
-                this.flowLayoutPanel1.Controls.Add(statUC);
-            }
-        }
+                AddBatteries(confDeserializtion.DefinedAddresses.Select(a => byte.Parse(a)).AsEnumerable(), confDeserializtion.HasCluster);
 
-        private void HandleClusterLoad()
-        {
-            BatteryStatViewModel clusterView;
-                        
-            if (SharedData.Default.BatteryPackContainer.TryRemove("cluster", out clusterView))
-            {
-                if (clusterView.IsSeries)
+                if (confDeserializtion.HasCluster)
                 {
-                    ClusterStatViewModel cluster = clusterView as ClusterStatViewModel;
-                    SeriesStatViewModel series1 = cluster.SeriesVm[0];
-                    SeriesStatViewModel series2 = cluster.SeriesVm[1];
-
-                    var list1 = series1.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-                    var list2 = series2.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-
-                    CreateSeries(list1, list2);
-                }
-                else
-                {
-                    SeriesStatViewModel cluster = clusterView as SeriesStatViewModel;
-                    var list1 = cluster.SeriesBatteriesAddresses.Select(b => b.Address).ToList();
-                    CreateParallel(list1, null);
-                }
-            }
+                    if (confDeserializtion.IsParallel)
+                    {
+                        CreateParallel(confDeserializtion.Group1, confDeserializtion.Group2);
+                    }
+                    else
+                    {
+                        CreateSeries(confDeserializtion.Group1, confDeserializtion.Group2);
+                    }
+                }      
+            }      
         }
+        
 
         void IHandle<ToolStripMessage>.Handle(ToolStripMessage message)
         {            
@@ -632,6 +612,40 @@ namespace YtsBmsGUI
                 RemoveFromTreeView(selectedNode.Name);
                 logic.RemoveBattery(selectedNode.Name);
             }
+        }
+
+        private void ClearTreeView()
+        {
+            // Display a wait cursor while the TreeNodes are being created.
+            Cursor.Current = Cursors.WaitCursor;
+
+            // Suppress repainting the TreeView until all the objects have been created.
+            treeView1.BeginUpdate();
+
+            // Clear the TreeView each time the method is called.
+            //treeView1.Nodes.Clear();
+
+            treeView1.Nodes.Clear();
+
+            //foreach (var item in SharedData.Default.BatteryPackContainer.Keys.Reverse())
+            //{
+            //    treeView1.Nodes.Add(item, string.Format("Battery : {0}", item), 0);
+            //}
+
+            // Reset the cursor to the default for all controls.
+            // Cursor.Current = Cursors.Default;
+
+            // Begin repainting the TreeView.
+            treeView1.EndUpdate();
+        }
+
+        private void ClearFlowPanel()
+        {
+            this.flowLayoutPanel1.SuspendLayout();
+            
+            this.flowLayoutPanel1.Controls.Clear();             
+            
+            this.flowLayoutPanel1.ResumeLayout(true);
         }
     }
 }

@@ -51,9 +51,13 @@ namespace Common
         [DataMember]
         public int WaitTimePeriodBetweenCommandSendMilliSec { get; set; }
 
+        [DataMember]
+        public double CurrentThreashold { get; set; }
         private static Configuration config;
 
         public static Configuration Default { get { return config; } }
+
+       
 
         static Configuration()
         {
@@ -84,6 +88,7 @@ namespace Common
                 {
                     //DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Configuration));
                     //ser.WriteObject(stream, config);
+
                     var output = JsonConvert.SerializeObject(config);
                     var bytes = Encoding.Default.GetBytes(output);
                     stream.Write(bytes, 0, bytes.Length);

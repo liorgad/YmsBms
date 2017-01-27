@@ -63,6 +63,8 @@ namespace Common
                 var protecList = SeriesVm.Where(sr =>
                 sr.ProtectionBackColor == Color.Red);
 
+                var currentThreashold = Common.Configuration.Default.CurrentThreashold;
+
                 if (protecList.Count() > 0)
                 {
                     var needToCheck = protecList.Select(bvm => bvm.Address).
@@ -70,11 +72,24 @@ namespace Common
                     Protection = string.Format("Check batteries :{0}",needToCheck);
 
                     ProtectionBackColor = System.Drawing.Color.Red;
+                }                
+                else if(Current >0 && Math.Abs(Current) > currentThreashold)
+                {
+                    ProtectionBackColor = SystemColors.Control;
+                    Protection = "charge status";
+                    CurrentForeColor = Color.Green;
+                }
+                else if (Current < 0 && Math.Abs(Current) > currentThreashold)
+                {
+                    ProtectionBackColor = SystemColors.Control;
+                    Protection = "discharge status";
+                    CurrentForeColor = Color.Green;
                 }
                 else
                 {
-                    ProtectionBackColor =  SystemColors.Control;
+                    ProtectionBackColor = SystemColors.Control;
                     Protection = string.Empty;
+                    CurrentForeColor = Color.Black;
                 }
             }
         }
@@ -115,7 +130,20 @@ namespace Common
                     NotifyPropertyChanged();
                 }
             }
-        }        
+        }
+
+        public override Color CurrentForeColor
+        {
+            get { return (this.currentForeColor); }
+            set
+            {
+                if (value != this.currentForeColor)
+                {
+                    this.currentForeColor = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public void Dispose()
         {
