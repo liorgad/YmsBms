@@ -46,6 +46,7 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.viewModelBindingSource)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -152,9 +153,12 @@
             this.treeView1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.treeView1.ContextMenuStrip = this.contextMenuStrip_treeView;
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.ImageIndex = 0;
+            this.treeView1.ImageList = this.imageList1;
             this.treeView1.Location = new System.Drawing.Point(4, 4);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4);
             this.treeView1.Name = "treeView1";
+            this.treeView1.SelectedImageIndex = 0;
             this.treeView1.Size = new System.Drawing.Size(172, 689);
             this.treeView1.TabIndex = 2;
             // 
@@ -220,6 +224,16 @@
             this.toolStripLabel1.Size = new System.Drawing.Size(88, 22);
             this.toolStripLabel1.Text = "Not Connected";
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "fatcow-farm-fresh-battery.ico");
+            this.imageList1.Images.SetKeyName(1, "battery_pack_256.png");
+            this.imageList1.Images.SetKeyName(2, "dantech.ico");
+            this.imageList1.Images.SetKeyName(3, "dantech.png");
+            this.imageList1.Images.SetKeyName(4, "save-icon-5416-16x16.ico");
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -269,6 +283,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip_treeView;
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 

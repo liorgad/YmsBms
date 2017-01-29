@@ -45,11 +45,11 @@ namespace YtsBmsGUI
             evAgg = EventAggregatorProvider.EventAggregator;
             evAgg.Subscribe(this);
 
-            ImageList treeViewImageList = new ImageList();
-            treeViewImageList.Images.Add(Image.FromFile(@"Resources\fatcow-farm-fresh-battery.ico"));
-            treeViewImageList.Images.Add(Image.FromFile(@"Resources\battery_pack_256.png"));
+            //ImageList treeViewImageList = new ImageList();
+            //treeViewImageList.Images.Add(Image.FromFile(@"Resources\fatcow-farm-fresh-battery.ico"));
+            //treeViewImageList.Images.Add(Image.FromFile(@"Resources\battery_pack_256.png"));
 
-            treeView1.ImageList = treeViewImageList;
+            //treeView1.ImageList = treeViewImageList;
         }
 
         private void TreeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -525,7 +525,7 @@ namespace YtsBmsGUI
         {
             var confDeserializtion = SharedData.Default.Load(WindowsFormsSynchronizationContext.Current);
 
-            if (null != confDeserializtion.DefinedAddresses )
+            if ((null != confDeserializtion) && (null != confDeserializtion.DefinedAddresses) )
             {
                 ClearFlowPanel();
                 ClearTreeView();
