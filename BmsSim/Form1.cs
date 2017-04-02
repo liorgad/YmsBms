@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using JamesWright.SimpleHttp;
 
 namespace BmsSim
 {
@@ -17,6 +18,10 @@ namespace BmsSim
     {
         RealtimeDataMap_V82 rt;
         FrameFormat frameFormat;
+
+        //App app;
+        SynchronousSocketListener tcpServer;
+
         public Form1()
         {
             InitializeComponent();
@@ -117,6 +122,52 @@ namespace BmsSim
         private void Form1_Load(object sender, EventArgs e)
         {
             propertyGrid1.SelectedObject = rt;
+
+            tcpServer = new SynchronousSocketListener();
+
+            tcpServer.
+
+            //#region Http Server
+            //app = new App();
+
+            //app.Get("/?param1=address", async (req, res) =>
+            //{                
+            //    //res.Content = "<p>You did a GET.</p>";
+            //    string body = await req.GetBodyAsync();
+            //    string result = SendReceive(body);
+            //    res.Content = result;
+            //    res.ContentType = "text/html";
+            //    await res.SendAsync();
+            //});
+
+            //app.Post("/", async (req, res) =>
+            //{
+            //    res.Content = "<p>You did a POST: " + await req.GetBodyAsync() + "</p>";
+            //    res.ContentType = "text/html";
+            //    await res.SendAsync();
+            //});
+
+            //app.Put("/", async (req, res) =>
+            //{
+            //    res.Content = "<p>You did a PUT: " + await req.GetBodyAsync() + "</p>";
+            //    res.ContentType = "text/html";
+            //    await res.SendAsync();
+            //});
+
+            //app.Delete("/", async (req, res) =>
+            //{
+            //    res.Content = "<p>You did a DELETE: " + await req.GetBodyAsync() + "</p>";
+            //    res.ContentType = "text/html";
+            //    await res.SendAsync();
+            //});
+
+            //Task.Run(() => app.Start());
+            //#endregion
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
         }
     }
 }

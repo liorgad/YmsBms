@@ -31,6 +31,24 @@ namespace ConsoleApplication1
         //Address=5 Voltage=25.028 Current=0 Temp=22 SOC=32 DFET=True CFET=True Protection= ChargeState=0 TempState=0 VoltState=0
         static void Main(string[] args)
         {
+
+            var frameFormat1 = new FrameFormat()
+            {
+                Address = 1,
+                Cmd = (byte)Command.RealTimeData,
+                Version = (byte)GenericParser.Version.Version82
+            };
+
+            var frameFormat1Str = frameFormat1.AsString;
+
+            var res = FrameFormat.CalculateCRC("ABC");
+
+            FrameFormat a6 = GenericParser.GenericParser.Parse<FrameFormat>(realTimeData82_4, DataType.ASCII_HEX);
+
+            RealtimeDataMap_V82 rtd6 = GenericParser.GenericParser.Parse<RealtimeDataMap_V82>(a6.Data);
+
+            var s = rtd6.ToStringAllProperties();
+
             FrameFormat realTimeCmd = new FrameFormat()
             {
                 Address = Convert.ToByte(5),
