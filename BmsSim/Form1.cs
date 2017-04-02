@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using JamesWright.SimpleHttp;
 
 namespace BmsSim
 {
@@ -121,11 +120,9 @@ namespace BmsSim
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            propertyGrid1.SelectedObject = rt;
+            propertyGrid1.SelectedObject = rt;           
 
-            tcpServer = new SynchronousSocketListener();
-
-            tcpServer.
+            Task.Run(() => SynchronousSocketListener.StartListening(SendReceive));
 
             //#region Http Server
             //app = new App();

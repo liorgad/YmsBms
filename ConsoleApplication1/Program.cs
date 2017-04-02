@@ -32,6 +32,10 @@ namespace ConsoleApplication1
         static void Main(string[] args)
         {
 
+            string s6 = "010252000E";
+
+            var r6 = FrameFormat.CalculateCRC(s6);
+
             var frameFormat1 = new FrameFormat()
             {
                 Address = 1,
